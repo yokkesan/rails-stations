@@ -10,10 +10,11 @@
     <th>画像</th>
     <th>登録日時</th>
     <th>更新日時</th>
+    <th>操作</th>
   </tr>
   <% @movies.each do |movie| %>
     <tr>
-      <td><%= movie.id %></td>
+      <td><%= link_to movie.id, edit_admin_movie_path(movie) %></td>  <!-- 編集画面へのリンク -->
       <td><%= movie.name %></td>
       <td><%= movie.year %></td>
       <td><%= movie.is_showing ? "上映中" : "上映予定" %></td>
@@ -27,6 +28,7 @@
       </td>
       <td><%= movie.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
       <td><%= movie.updated_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+      <td><%= link_to "編集", edit_admin_movie_path(movie) %></td>
     </tr>
   <% end %>
 </table>

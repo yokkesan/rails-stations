@@ -29,3 +29,15 @@
 
 en:
   hello: "Hello world"
+
+ja:
+  activerecord:
+    attributes:
+      movie:
+        name: "タイトル"
+    errors:
+      models:
+        movie:
+          attributes:
+            name:
+              taken: "このタイトルの映画はすでに登録されています"
