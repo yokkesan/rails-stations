@@ -46,6 +46,13 @@ module Admin
       render :edit, status: :internal_server_error
     end
 
+    # 映画を削除する
+    def destroy
+      movie = Movie.find(params[:id]) # 存在しない場合 ActiveRecord::RecordNotFound を発生
+      movie.destroy
+      flash[:notice] = "映画が削除されました"
+      redirect_to admin_movies_path, status: :found  # 302 を返す
+    end
 
     private
 
