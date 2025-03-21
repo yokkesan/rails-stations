@@ -1,0 +1,18 @@
+<h1>新規上映スケジュール追加</h1>
+
+<p><strong>作品ID:</strong> <%= @movie.id %></p>
+<p><strong>作品名:</strong> <%= @movie.name %></p>
+
+<%= form_with model: [:admin, @movie, @schedule], url: admin_movie_schedules_path(@movie), method: :post do |f| %>
+  <div>
+    <label>開始時刻:</label>
+    <%= f.time_field :start_time, required: true %>
+  </div>
+
+  <div>
+    <label>終了時刻:</label>
+    <%= f.time_field :end_time, required: true %>
+  </div>
+
+  <%= f.submit "登録", class: "btn btn-primary" %>
+<% end %>

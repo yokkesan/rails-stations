@@ -23,6 +23,12 @@ module Admin
       @movie = Movie.new
     end
 
+    # **追加: 映画詳細ページ**
+    def show
+      @movie = Movie.includes(:schedules).find(params[:id]) 
+    end
+
+
     # 映画をデータベースに登録
     def create
       @movie = Movie.new(movie_params)

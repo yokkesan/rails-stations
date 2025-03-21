@@ -1,0 +1,37 @@
+<h1>映画詳細</h1>
+
+<p><strong>作品ID:</strong> <%= @movie.id %></p>
+<p><strong>タイトル:</strong> <%= @movie.name %></p>
+<p><strong>公開年:</strong> <%= @movie.year %></p>
+<p><strong>概要:</strong> <%= @movie.description %></p>
+<p><strong>上映状況:</strong> <%= @movie.is_showing ? "上映中" : "上映予定" %></p>
+
+<% if @movie.image_url.present? %>
+  <p><strong>画像:</strong> <img src="<%= @movie.image_url %>" alt="<%= @movie.name %>" style="max-width:200px;"></p>
+<% end %>
+
+<hr>
+
+<h2>上映スケジュール</h2>
+
+<% if @movie.schedules.any? %>
+  <ul>
+    <% @movie.schedules.each do |schedule| %>
+      <li>
+        <%= schedule.start_time.strftime("%H:%M") %> - <%= schedule.end_time.strftime("%H:%M") %>
+        <%= link_to "詳細", admin_schedule_path(schedule), class: "btn btn-info" %>
+        <%= link_to "編集", edit_admin_schedule_path(schedule), class: "btn btn-warning" %>
+        <%= button_to "削除", admin_schedule_path(schedule), method: :delete, data: { confirm: "本当に削除しますか？" }, class: "btn btn-danger" %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>現在スケジュールがありません。</p>
+<% end %>
+
+<%= link_to "新しいスケジュールを追加", new_admin_movie_schedule_path(@movie), class: "btn btn-primary" %>
+
+<hr>
+
+<%= link_to "編集", edit_admin_movie_path(@movie), class: "btn btn-secondary" %>
+<%= link_to "映画一覧に戻る", admin_movies_path, class: "btn btn-secondary" %>

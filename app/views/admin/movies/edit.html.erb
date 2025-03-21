@@ -50,3 +50,20 @@
 <%= button_to "削除", admin_movie_path(@movie), method: :delete, data: { confirm: "本当に削除しますか？" }, class: "delete-button" %>
 
 <%= link_to "映画一覧に戻る", admin_movies_path %>
+
+<h2>上映スケジュール管理</h2>
+
+<% if @movie.schedules.any? %>
+  <ul>
+    <% @movie.schedules.each do |schedule| %>
+      <li>
+        <%= schedule.start_time.strftime("%H:%M") %> 〜 <%= schedule.end_time.strftime("%H:%M") %>
+        <%= link_to "編集", admin_schedule_path(schedule) %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>現在スケジュールが登録されていません。</p>
+<% end %>
+
+<%= link_to "新しいスケジュールを追加", new_admin_movie_schedule_path(@movie), class: "btn btn-primary" %>

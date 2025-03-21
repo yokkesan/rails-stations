@@ -1,0 +1,23 @@
+<h1>上映スケジュール編集</h1>
+
+<p><strong>作品ID:</strong> <%= @schedule.movie.id %></p>
+<p><strong>作品名:</strong> <%= @schedule.movie.name %></p>
+
+<%= form_with model: [:admin, @schedule], url: admin_schedule_path(@schedule), method: :put do |f| %>
+  <div>
+    <label>開始時刻:</label>
+    <%= f.time_field :start_time, required: true, value: @schedule.start_time.strftime("%H:%M") %>
+  </div>
+
+  <div>
+    <label>終了時刻:</label>
+    <%= f.time_field :end_time, required: true, value: @schedule.end_time.strftime("%H:%M") %>
+  </div>
+
+  <%= f.submit "更新", class: "btn btn-primary" %>
+<% end %>
+
+<!-- 削除ボタン -->
+<%= button_to "削除", admin_schedule_path(@schedule), method: :delete, data: { confirm: "本当に削除しますか？" }, class: "btn btn-danger" %>
+
+<%= link_to "スケジュール一覧に戻る", admin_schedules_path, class: "btn btn-secondary" %>

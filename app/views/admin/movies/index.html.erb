@@ -1,5 +1,3 @@
-<h1>管理画面: 映画一覧</h1>
-
 <table border="1">
   <tr>
     <th>ID</th>
@@ -12,23 +10,40 @@
     <th>更新日時</th>
     <th>操作</th>
   </tr>
+
   <% @movies.each do |movie| %>
     <tr>
-      <td><%= link_to movie.id, edit_admin_movie_path(movie) %></td>  <!-- 編集画面へのリンク -->
+      <td><a href="<%= edit_admin_movie_path(movie) %>"><%= movie.id %></a></td>
       <td><%= movie.name %></td>
       <td><%= movie.year %></td>
       <td><%= movie.is_showing ? "上映中" : "上映予定" %></td>
-      <td><%= movie.description %></td>
+      <td><%= simple_format(movie.description) %></td>
       <td>
         <% if movie.image_url.present? %>
-          <a href="<%= movie.image_url %>" target="_blank">画像</a>
+          <img src="<%= movie.image_url %>" alt="<%= movie.name %> の画像" width="100">
         <% else %>
-          <span>なし</span>
+          なし
         <% end %>
       </td>
-      <td><%= movie.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
-      <td><%= movie.updated_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
-      <td><%= link_to "編集", edit_admin_movie_path(movie) %></td>
+      <td><%= movie.created_at %></td>
+      <td><%= movie.updated_at %></td>
+      <td><a href="<%= edit_admin_movie_path(movie) %>">編集</a></td>
     </tr>
+
+    <% if movie.schedules.any? %>
+      <tr>
+        <td colspan="9">
+          <strong>上映スケジュール:</strong>
+          <ul>
+            <% movie.schedules.each do |schedule| %>
+              <li>
+                <%= schedule.start_time.strftime("%Y-%m-%d %H:%M") %> 〜
+                <%= schedule.end_time.strftime("%Y-%m-%d %H:%M") %>
+              </li>
+            <% end %>
+          </ul>
+        </td>
+      </tr>
+    <% end %>
   <% end %>
 </table>
