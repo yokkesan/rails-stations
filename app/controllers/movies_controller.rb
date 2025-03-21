@@ -13,13 +13,36 @@ class MoviesController < ApplicationController
     end
 
     respond_to do |format|
-      format.html # `index.html.erb` を適用
+      format.html
     end
   end
 
   # 映画詳細ページ
   def show
     @movie = Movie.find(params[:id])
-    @schedules = @movie.schedules # 関連する上映スケジュールを取得
+    @schedules = @movie.schedules
   end
-end
+
+  # 座席予約ページ
+  def reservation
+    @movie = Movie.find(params[:movie_id] || params[:id]) # movie_id がなければ id を使用
+  
+    # パラメータが足りない場合はリダイレクト
+    if params[:schedule_id].blank? || params[:date].blank?
+      redirect_to movie_path(@movie), alert: "日付とスケジュールを選択してください"
+      return
+    end
+  
+    @date = params[:date]
+    @schedule = Schedule.find_by(id: params[:schedule_id])
+  
+    unless @schedule
+      redirect_to movie_path(@movie), alert: "スケジュールが見つかりません"
+      return
+    end
+  
+    @sheets = Sheet.all
+    # 予約済みの座席情報を取得
+    @reservations = Reservation.where(schedule_id: @schedule.id, date: @date)
+  end
+end # ← **不足していた `end` を追加**

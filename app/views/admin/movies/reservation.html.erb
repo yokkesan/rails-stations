@@ -1,0 +1,43 @@
+<h1>映画詳細</h1>
+
+<p><strong>作品ID:</strong> <%= @movie.id %></p>
+<p><strong>タイトル:</strong> <%= @movie.name %></p>
+<p><strong>公開年:</strong> <%= @movie.year %></p>
+<p><strong>概要:</strong> <%= @movie.description %></p>
+<p><strong>画像:</strong> <%= image_tag @movie.image_url if @movie.image_url.present? %></p>
+
+<h2>上映スケジュール</h2>
+
+<% if @movie.schedules.any? %>
+  <ul>
+    <% @movie.schedules.each do |schedule| %>
+      <li>
+        <strong>開始時刻:</strong> <%= schedule.start_time.strftime("%Y-%m-%d %H:%M") %><br>
+        <strong>終了時刻:</strong> <%= schedule.end_time.strftime("%Y-%m-%d %H:%M") %><br>
+        <strong>登録日時:</strong> <%= schedule.created_at.strftime("%Y-%m-%d %H:%M") %><br>
+        <strong>更新日時:</strong> <%= schedule.updated_at.strftime("%Y-%m-%d %H:%M") %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>上映スケジュールがありません。</p>
+<% end %>
+
+<hr>
+<h2>座席予約</h2>
+
+<%= form_with url: reservation_movie_path(@movie), method: :get, local: true do |f| %>
+  <div>
+    <label for="date">日付を選択：</label>
+    <%= select_tag :date, options_for_select((0..6).map { |i| [(Date.today + i).strftime("%Y-%m-%d"), (Date.today + i).strftime("%Y-%m-%d")] }) %>
+  </div>
+
+  <div>
+    <label for="schedule_id">スケジュールを選択：</label>
+    <%= select_tag :schedule_id, options_from_collection_for_select(@schedules, :id, ->(s) { "#{s.start_time.strftime('%H:%M')}〜#{s.end_time.strftime('%H:%M')}" }) %>
+  </div>
+
+  <div>
+    <%= f.submit "座席を予約する" %>
+  </div>
+<% end %>
