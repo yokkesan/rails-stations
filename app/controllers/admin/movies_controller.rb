@@ -1,7 +1,21 @@
 module Admin
   class MoviesController < ApplicationController
     def index
-      @movies = Movie.all  # 映画一覧
+      @movies = Movie.all
+
+      # 検索キーワードで絞り込み（タイトル or 概要に含まれる）
+      if params[:keyword].present?
+        @movies = @movies.where("name LIKE :keyword OR description LIKE :keyword", keyword: "%#{params[:keyword]}%")
+      end
+
+      # 上映状況でフィルタリング
+      if params[:is_showing].present?
+        @movies = @movies.where(is_showing: params[:is_showing])
+      end
+
+      respond_to do |format|
+        format.html # `index.html.erb` を適用
+      end
     end
 
     # 映画登録フォームを表示
@@ -15,10 +29,10 @@ module Admin
 
       if @movie.save
         flash[:notice] = "映画が登録されました"
-        redirect_to admin_movies_path  # 登録後、映画一覧にリダイレクト
+        redirect_to admin_movies_path
       else
         flash.now[:alert] = "登録に失敗しました: " + @movie.errors.full_messages.join(", ")
-        render :new, status: :unprocessable_entity  # エラー時はフォームに戻す
+        render :new, status: :unprocessable_entity
       end
     rescue StandardError => e
       flash.now[:alert] = "エラーが発生しました: #{e.message}"
@@ -48,10 +62,16 @@ module Admin
 
     # 映画を削除する
     def destroy
-      movie = Movie.find(params[:id]) # 存在しない場合 ActiveRecord::RecordNotFound を発生
+      movie = Movie.find(params[:id])
       movie.destroy
       flash[:notice] = "映画が削除されました"
-      redirect_to admin_movies_path, status: :found  # 302 を返す
+      redirect_to admin_movies_path, status: :see_other
+    rescue ActiveRecord::RecordNotFound
+      flash[:alert] = "映画が見つかりませんでした"
+      head :not_found
+    rescue StandardError => e
+      flash[:alert] = "削除に失敗しました: #{e.message}"
+      redirect_to admin_movies_path, status: :internal_server_error
     end
 
     private
