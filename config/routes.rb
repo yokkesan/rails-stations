@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   resources :sheets, only: [:index]
 
   # 映画一覧ページ（一般ユーザー向け）
-  resources :movies, only: [:index]
+  resources :movies, only: [:index, :show]  # `show` を追加して詳細ページに対応
 
   # 管理者用映画管理
   namespace :admin do

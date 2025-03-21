@@ -1,0 +1,27 @@
+<h1><%= @movie.name %></h1>
+<p>公開年: <%= @movie.year %></p>
+<p>上映状況: <%= @movie.is_showing ? "上映中" : "上映予定" %></p>
+<p>概要: <%= simple_format(@movie.description) %></p>
+<%= image_tag @movie.image_url, alt: @movie.name if @movie.image_url.present? %>
+
+<h2>上映スケジュール</h2>
+<% if @schedules.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>開始時間</th>
+        <th>終了時間</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @schedules.each do |schedule| %>
+        <tr>
+          <td><%= schedule.start_time.strftime("%H:%M") %></td>
+          <td><%= schedule.end_time.strftime("%H:%M") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>現在、上映スケジュールはありません。</p>
+<% end %>
