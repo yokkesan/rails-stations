@@ -11,10 +11,6 @@ class MoviesController < ApplicationController
     if params[:is_showing].present?
       @movies = @movies.where(is_showing: params[:is_showing])
     end
-
-    respond_to do |format|
-      format.html
-    end
   end
 
   # 映画詳細ページ
@@ -25,24 +21,31 @@ class MoviesController < ApplicationController
 
   # 座席予約ページ
   def reservation
-    @movie = Movie.find(params[:movie_id] || params[:id]) # movie_id がなければ id を使用
-  
-    # パラメータが足りない場合はリダイレクト
+    @movie = Movie.find_by(id: params[:movie_id] || params[:id])
+
+    if @movie.nil?
+      redirect_to movies_path, alert: "指定された映画が見つかりません"
+      return
+    end
+
     if params[:schedule_id].blank? || params[:date].blank?
       redirect_to movie_path(@movie), alert: "日付とスケジュールを選択してください"
       return
     end
-  
+
     @date = params[:date]
     @schedule = Schedule.find_by(id: params[:schedule_id])
-  
+
     unless @schedule
       redirect_to movie_path(@movie), alert: "スケジュールが見つかりません"
       return
     end
-  
+
     @sheets = Sheet.all
-    # 予約済みの座席情報を取得
     @reservations = Reservation.where(schedule_id: @schedule.id, date: @date)
+
+    # デバッグ用ログを追加
+    Rails.logger.debug "@sheets: #{@sheets.inspect}"
+    Rails.logger.debug "@reservations: #{@reservations.inspect}"
   end
-end # ← **不足していた `end` を追加**
+end
