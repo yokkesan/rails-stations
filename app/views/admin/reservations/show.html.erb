@@ -1,0 +1,37 @@
+<h1>予約詳細・編集</h1>
+
+<%= form_with model: [:admin, @reservation], url: admin_reservation_path(@reservation), method: :put, local: true do |f| %>
+  <div>
+    <%= f.label :movie_id, "映画作品" %><br>
+    <%= select_tag :movie_id, options_from_collection_for_select(@movies, :id, :name, @reservation.schedule.movie.id), disabled: true %>
+  </div>
+
+  <div>
+    <%= f.label :schedule_id, "スケジュール" %><br>
+    <%= f.collection_select :schedule_id, @schedules, :id, ->(s) { "#{s.start_time.strftime("%Y-%m-%d %H:%M")}" } %>
+  </div>
+
+  <div>
+    <%= f.label :sheet_id, "座席" %><br>
+    <%= f.collection_select :sheet_id, @sheets, :id, ->(s) { "#{s.row}#{s.column}" } %>
+  </div>
+
+  <div>
+    <%= f.label :date, "日付" %><br>
+    <%= f.date_field :date %>
+  </div>
+
+  <div>
+    <%= f.label :name, "予約者名" %><br>
+    <%= f.text_field :name %>
+  </div>
+
+  <div>
+    <%= f.label :email, "メールアドレス" %><br>
+    <%= f.email_field :email %>
+  </div>
+
+  <div>
+    <%= f.submit "更新する" %>
+  </div>
+<% end %>
