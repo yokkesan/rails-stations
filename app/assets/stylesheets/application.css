@@ -13,3 +13,7 @@
  *= require_tree .
  *= require_self
  */
+ @import "movies/index";
+ @import "admin";
+ @import "admin/movies/index";
+ @import "admin/movies/new";

@@ -14,6 +14,11 @@
     <%= f.time_field :end_time, required: true, value: @schedule.end_time.strftime("%H:%M") %>
   </div>
 
+  <div class="field">
+  <%= f.label :screen_id, "スクリーン" %>
+  <%= f.collection_select :screen_id, Screen.all, :id, :name, prompt: "選択してください" %>
+  </div>
+
   <%= f.submit "更新", class: "btn btn-primary" %>
 <% end %>
 

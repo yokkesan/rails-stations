@@ -21,11 +21,15 @@ module Admin
       def create
         @movie = Movie.find(params[:movie_id])
         @schedule = @movie.schedules.build(schedule_params)
-  
+      
         if @schedule.save
           flash[:notice] = "スケジュールが登録されました"
           redirect_to edit_admin_movie_path(@movie)
         else
+          # 💥 ここでバリデーションエラーの内容をログに出す
+          puts "=== バリデーションエラー ==="
+          puts @schedule.errors.full_messages
+      
           flash.now[:alert] = "登録に失敗しました"
           render :new, status: :unprocessable_entity
         end
@@ -64,7 +68,7 @@ module Admin
       end
   
       def schedule_params
-        params.require(:schedule).permit(:start_time, :end_time)
+        params.require(:schedule).permit(:start_time, :end_time, :screen_id)
       end
     end
   end

@@ -1,10 +1,12 @@
 Rails.application.routes.draw do
+  devise_for :users, controllers: {
+  registrations: 'users/registrations'
+}
   # 映画一覧ページ（一般ユーザー向け）
   resources :movies, only: [:index, :show] do
     # 追加: GET /movies/:movie_id/reservation
     get 'reservation', on: :member
 
-    
     resources :schedules, only: [] do
       resources :reservations, only: [:new]
     end

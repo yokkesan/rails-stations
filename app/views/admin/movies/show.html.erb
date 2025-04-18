@@ -1,46 +1,21 @@
-class MoviesController < ApplicationController
-    def index
-      @movies = Movie.all
-  
-      # 検索処理
-      if params[:keyword].present?
-        @movies = @movies.where("name LIKE ? OR description LIKE ?", "%#{params[:keyword]}%", "%#{params[:keyword]}%")
-      end
-  
-      # 上映状況でフィルタリング
-      if params[:is_showing].present?
-        @movies = @movies.where(is_showing: params[:is_showing])
-      end
-  
-      respond_to do |format|
-        format.html
-      end
-    end
-  
-    # 映画詳細ページ
-    def show
-      @movie = Movie.find(params[:id])
-      @schedules = @movie.schedules
-    end
-  
-    # 座席予約ページ
-    def reservation
-      @movie = Movie.find(params[:movie_id] || params[:id]) # movie_id がなければ id を使用
-  
-      # パラメータが足りない場合はリダイレクト
-      if params[:schedule_id].blank? || params[:date].blank?
-        redirect_to movie_path(@movie), alert: "日付とスケジュールを選択してください"
-        return
-      end
-  
-      @date = params[:date]
-      @schedule = Schedule.find_by(id: params[:schedule_id])
-  
-      unless @schedule
-        redirect_to movie_path(@movie), alert: "スケジュールが見つかりません"
-        return
-      end
-  
-      @sheets = Sheet.all
-    end
-  end
+<h1>映画詳細</h1>
+
+<p><strong>タイトル：</strong> <%= @movie.name %></p>
+<p><strong>公開年：</strong> <%= @movie.year %></p>
+<p><strong>上映中：</strong> <%= @movie.is_showing ? "上映中" : "未上映" %></p>
+<p><strong>概要：</strong> <%= @movie.description %></p>
+<p><strong>画像URL：</strong> <%= link_to @movie.image_url, @movie.image_url %></p>
+<p><img src="<%= @movie.image_url %>" alt="<%= @movie.name %>" width="300"></p>
+
+<h2>上映スケジュール</h2>
+<% if @movie.schedules.present? %>
+  <ul>
+    <% @movie.schedules.each do |schedule| %>
+      <li><%= schedule.start_time.strftime("%Y年%m月%d日 %H:%M") %> 〜 <%= schedule.end_time.strftime("%H:%M") %></li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>スケジュールが登録されていません。</p>
+<% end %>
+
+<%= link_to '一覧に戻る', admin_movies_path, class: 'btn btn-secondary' %>

@@ -1,49 +1,61 @@
-<table border="1">
-  <tr>
-    <th>ID</th>
-    <th>タイトル</th>
-    <th>公開年</th>
-    <th>上映中</th>
-    <th>概要</th>
-    <th>画像</th>
-    <th>登録日時</th>
-    <th>更新日時</th>
-    <th>操作</th>
-  </tr>
+<div class="admin-wrapper">
+  <aside class="sidebar">
+    <h2>menu</h2>
+    <ul>
+      <li><%= link_to '映画一覧', admin_movies_path %></li>
+    </ul>
+  </aside>
 
-  <% @movies.each do |movie| %>
-    <tr>
-      <td><a href="<%= edit_admin_movie_path(movie) %>"><%= movie.id %></a></td>
-      <td><%= movie.name %></td>
-      <td><%= movie.year %></td>
-      <td><%= movie.is_showing ? "上映中" : "上映予定" %></td>
-      <td><%= simple_format(movie.description) %></td>
-      <td>
-        <% if movie.image_url.present? %>
-          <img src="<%= movie.image_url %>" alt="<%= movie.name %> の画像" width="100">
-        <% else %>
-          なし
-        <% end %>
-      </td>
-      <td><%= movie.created_at %></td>
-      <td><%= movie.updated_at %></td>
-      <td><a href="<%= edit_admin_movie_path(movie) %>">編集</a></td>
-    </tr>
+  <main class="content">
+    <h1>映画一覧</h1>
 
-    <% if movie.schedules.any? %>
-      <tr>
-        <td colspan="9">
-          <strong>上映スケジュール:</strong>
-          <ul>
-            <% movie.schedules.each do |schedule| %>
-              <li>
-                <%= schedule.start_time.strftime("%Y-%m-%d %H:%M") %> 〜
-                <%= schedule.end_time.strftime("%Y-%m-%d %H:%M") %>
-              </li>
-            <% end %>
-          </ul>
-        </td>
-      </tr>
+    <%= form_with url: admin_movies_path, method: :get, local: true do %>
+      <label for="keyword">キーワード検索:</label>
+      <%= text_field_tag :keyword, params[:keyword] %>
+
+      <label>公開状態:</label>
+      <%= radio_button_tag :is_showing, "", params[:is_showing].blank?, id: "all" %>
+      <label for="all">すべて</label>
+
+      <%= radio_button_tag :is_showing, "1", params[:is_showing] == "1", id: "showing" %>
+      <label for="showing">上映中</label>
+
+      <%= radio_button_tag :is_showing, "0", params[:is_showing] == "0", id: "upcoming" %>
+      <label for="upcoming">上映予定</label>
+
+      <%= submit_tag "検索", class: "btn btn-primary" %>
     <% end %>
-  <% end %>
-</table>
+
+    <table class="movie-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>映画タイトル</th>
+          <th>公開年</th>
+          <th>上映中か</th>
+          <th>概要</th>
+          <th>画像URL</th>
+          <th>作成日時</th>
+          <th>更新日時</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @movies.each do |movie| %>
+          <tr>
+            <td><%= movie.id %></td>
+            <td><%= movie.name %></td>
+            <td><%= movie.year %></td>
+            <td><%= movie.is_showing ? '上映中' : '未上映' %></td>
+            <td><%= truncate(movie.description, length: 20) %></td>
+            <td><%= link_to movie.image_url, movie.image_url %></td>
+            <td><%= movie.created_at.strftime("%y-%m-%d %H:%M:%S") %></td>
+            <td><%= movie.updated_at.strftime("%y-%m-%d %H:%M:%S") %></td>
+            <td>
+      <%= link_to '編集', edit_admin_movie_path(movie), class: 'btn btn-primary' %>
+    </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </main>
+</div>

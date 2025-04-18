@@ -1,5 +1,6 @@
 module Admin
   class MoviesController < ApplicationController
+    layout "admin"
     def index
       @movies = Movie.all
 
