@@ -26,4 +26,5 @@ Rails.application.routes.draw do
     resources :schedules, only: [:index, :show, :update, :destroy, :edit]
     resources :reservations
   end
+  root "movies#index"
 end

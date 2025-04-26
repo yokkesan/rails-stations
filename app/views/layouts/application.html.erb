@@ -9,6 +9,14 @@
 </head>
 
 <body>
+<nav style="background-color: #f8f8f8; padding: 10px;">
+    <%= link_to "🎬 映画一覧", movies_path %> |
+    <%= link_to "🎟 座席一覧", sheets_path %> |
+    <%= link_to "🛠 管理映画", admin_movies_path %> |
+    <%= link_to "📅 管理スケジュール", admin_schedules_path %> |
+    <%= link_to "📋 管理予約", admin_reservations_path %>
+  </nav>
+
   <% if flash[:notice] %>
     <div class="alert alert-success">
       <%= flash[:notice] %>

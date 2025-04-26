@@ -1,17 +1,33 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Admin Panel</title>
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-  </head>
+<head>
+  <title>管理画面</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+</head>
 
-  <body>
-    <header class="admin-header">
-      管理画面
-    </header>
+<body>
+  <!-- ✅ ナビゲーション追加 -->
+  <nav style="background: #f0f0f0; padding: 10px; margin-bottom: 20px;">
+    <%= link_to "🎬 映画一覧（一般）", movies_path, style: "margin-right: 15px;" %>
+    <%= link_to "🪑 座席表", sheets_path, style: "margin-right: 15px;" %>
+    <%= link_to "🛠 管理映画", admin_movies_path, style: "margin-right: 15px;" %>
+    <%= link_to "📅 管理スケジュール", admin_schedules_path, style: "margin-right: 15px;" %>
+    <%= link_to "📋 管理予約", admin_reservations_path %>
+  </nav>
 
-    <%= yield %>
-  </body>
+  <% if flash[:notice] %>
+    <div class="alert alert-success">
+      <%= flash[:notice] %>
+    </div>
+  <% elsif flash[:alert] %>
+    <div class="alert alert-danger">
+      <%= flash[:alert] %>
+    </div>
+  <% end %>
+
+  <%= yield %>
+</body>
 </html>
