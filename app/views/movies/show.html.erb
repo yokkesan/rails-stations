@@ -38,3 +38,20 @@
 <% else %>
   <p>現在、上映スケジュールはありません。</p>
 <% end %>
+
+<h2>予約済み座席一覧</h2>
+
+<% if @reservations.present? %>
+  <ul>
+    <% @reservations.each do |reservation| %>
+      <li>
+        日付: <%= reservation.date %> /
+        時間: <%= reservation.schedule.start_time.strftime("%H:%M") %> /
+        座席: <%= reservation.sheet.row %>-<%= reservation.sheet.column %> /
+        名前: <%= reservation.name %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>まだ予約はありません。</p>
+<% end %>

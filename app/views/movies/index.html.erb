@@ -29,6 +29,7 @@
       <th>上映状況</th>
       <th>概要</th>
       <th>画像</th>
+      <th>詳細</th>
     </tr>
   </thead>
   <tbody>
@@ -40,6 +41,9 @@
         <td><%= movie.is_showing ? '上映中' : '上映予定' %></td>
         <td><%= simple_format(movie.description) %></td>
         <td><%= link_to "画像", movie.image_url, target: "_blank" %></td>
+        <td>
+          <%= link_to "詳細", movie_path(movie), class: "btn btn-primary" %>
+        </td>
       </tr>
     <% end %>
   </tbody>

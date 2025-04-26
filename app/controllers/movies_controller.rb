@@ -17,6 +17,8 @@ class MoviesController < ApplicationController
   def show
     @movie = Movie.find(params[:id])
     @schedules = @movie.schedules
+    @reservations = Reservation.includes(:schedule, :sheet)
+                            .where(schedule_id: @schedules.ids, date: Date.today..)
   end
 
   # 座席予約ページ

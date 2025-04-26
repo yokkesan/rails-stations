@@ -26,7 +26,10 @@ module Admin
 
     # **追加: 映画詳細ページ**
     def show
-      @movie = Movie.includes(:schedules).find(params[:id]) 
+      @movie = Movie.includes(:schedules).find(params[:id])
+      @schedules = @movie.schedules
+      @reservations = Reservation.includes(:schedule, :sheet)
+                      .where(schedule_id: @schedules.ids, date: Date.today..)
     end
 
 
