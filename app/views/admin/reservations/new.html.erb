@@ -2,8 +2,8 @@
 
 <%= form_with model: @reservation, url: admin_reservations_path, local: true do |f| %>
   <div>
-    <%= f.label :movie_id, '映画' %><br>
-    <%= select_tag :schedule_id, options_from_collection_for_select(@schedules, :id, ->(s) { "#{s.movie.name} - #{s.start_time.strftime('%Y-%m-%d %H:%M')}" }), include_blank: true %>
+    <%= f.label :schedule_id, '映画とスケジュール' %><br>
+    <%= f.collection_select :schedule_id, @schedules, :id, ->(s) { "#{s.movie.name} - #{s.start_time.strftime('%Y-%m-%d %H:%M')}" }, prompt: true %>
   </div>
 
   <div>

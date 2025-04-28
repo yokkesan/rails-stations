@@ -25,9 +25,7 @@
         <td><%= reservation.email %></td>
         <td>
           <%= link_to '編集', edit_admin_reservation_path(reservation) %> |
-          <%= link_to '削除', admin_reservation_path(reservation), method: :delete, data: { confirm: "本当に削除しますか？" } %>
-        </td>
-      </tr>
+          <%= button_to '削除', admin_reservation_path(reservation), method: :delete, data: { turbo_confirm: '本当に削除してもいいですか？' }, class: 'btn btn-danger', form: { class: "inline" } %>
     <% end %>
   </tbody>
 </table>
