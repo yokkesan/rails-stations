@@ -16,6 +16,14 @@
     <%= link_to "🛠 管理映画", admin_movies_path %> |
     <%= link_to "📅 管理スケジュール", admin_schedules_path %> |
     <%= link_to "📋 管理予約", admin_reservations_path %>
+
+    <% if user_signed_in? %>
+  ログイン中：<%= current_user.name %> |
+  <%= button_to "ログアウト", destroy_user_session_path, method: :delete, form_class: "inline", class: "btn btn-link" %>
+<% else %>
+  <%= link_to "ログイン", new_user_session_path %> |
+  <%= link_to "ユーザー登録", new_user_registration_path %>
+<% end %>
   </nav>
 
   <% if flash[:notice] %>

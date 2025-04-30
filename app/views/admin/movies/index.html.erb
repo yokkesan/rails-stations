@@ -37,6 +37,7 @@
           <th>画像URL</th>
           <th>作成日時</th>
           <th>更新日時</th>
+          <th>詳細</th>
         </tr>
       </thead>
       <tbody>
@@ -51,8 +52,9 @@
             <td><%= movie.created_at.strftime("%y-%m-%d %H:%M:%S") %></td>
             <td><%= movie.updated_at.strftime("%y-%m-%d %H:%M:%S") %></td>
             <td>
-      <%= link_to '編集', edit_admin_movie_path(movie), class: 'btn btn-primary' %>
-    </td>
+            <%= link_to '編集', edit_admin_movie_path(movie), class: 'btn btn-primary' %>
+            <%= link_to '詳細', admin_movie_path(movie), class: 'btn btn-info' %>
+            </td>
           </tr>
         <% end %>
       </tbody>
