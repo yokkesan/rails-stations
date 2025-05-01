@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateReservations < ActiveRecord::Migration[7.1]
   def change
     create_table :reservations do |t|
@@ -10,6 +12,6 @@ class CreateReservations < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    add_index :reservations, [:date, :schedule_id, :sheet_id], unique: true, name: 'index_unique_reservation'
+    add_index :reservations, %i[date schedule_id sheet_id], unique: true, name: 'index_unique_reservation'
   end
 end

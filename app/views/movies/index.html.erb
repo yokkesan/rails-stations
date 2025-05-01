@@ -5,7 +5,7 @@
 <!-- 検索フォーム -->
 <%= form_with url: movies_path, method: :get, local: true do %>
   <label for="keyword">キーワード検索:</label>
-  <%= text_field_tag :keyword, params[:keyword] %>
+  <%= text_field_tag :keyword, params[:keyword], autocomplete: "off" %>
 
   <label>公開状態:</label>
   <%= radio_button_tag :is_showing, "", params[:is_showing].blank?, id: "all" %>

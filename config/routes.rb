@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   devise_for :users, controllers: {
-  registrations: 'users/registrations'
-}
+    registrations: 'users/registrations'
+  }
   # 映画一覧ページ（一般ユーザー向け）
-  resources :movies, only: [:index, :show] do
+  resources :movies, only: %i[index show] do
     # 追加: GET /movies/:movie_id/reservation
     get 'reservation', on: :member
 
@@ -20,11 +22,11 @@ Rails.application.routes.draw do
 
   # 管理者用映画管理
   namespace :admin do
-    resources :movies, only: [:index, :new, :create, :edit, :update, :destroy, :show] do
-      resources :schedules, only: [:new, :create]
+    resources :movies, only: %i[index new create edit update destroy show] do
+      resources :schedules, only: %i[new create]
     end
-    resources :schedules, only: [:index, :show, :update, :destroy, :edit]
+    resources :schedules, only: %i[index show update destroy edit]
     resources :reservations
   end
-  root "movies#index"
+  root 'movies#index'
 end

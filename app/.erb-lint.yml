@@ -1,0 +1,9 @@
+linters:
+  FinalNewline:
+    enabled: true
+  SpaceInHtmlTag:
+    enabled: true
+  Indentation:
+    enabled: true
+  TrailingWhitespace:
+    enabled: true

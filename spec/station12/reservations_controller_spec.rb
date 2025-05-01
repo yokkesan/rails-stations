@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Admin::ReservationsController, type: :controller do
   render_views
+
   describe 'Station12 GET /admin/reservations' do
     before do
       sheets = create_list(:sheet, 3)
@@ -12,7 +15,7 @@ RSpec.describe Admin::ReservationsController, type: :controller do
       get :index
     end
 
-    it ' 200が返ること' do
+    it '200が返ること' do
       expect(response).to have_http_status(200)
     end
 
@@ -30,10 +33,10 @@ RSpec.describe Admin::ReservationsController, type: :controller do
     end
 
     it 'name, email, schedule_id, sheet_idのすべてを受け取るフォームがあること' do
-      expect(response.body).to include("name")
-      expect(response.body).to include("email")
-      expect(response.body).to include("schedule_id")
-      expect(response.body).to include("sheet_id")
+      expect(response.body).to include('name')
+      expect(response.body).to include('email')
+      expect(response.body).to include('schedule_id')
+      expect(response.body).to include('sheet_id')
     end
   end
 
@@ -42,7 +45,19 @@ RSpec.describe Admin::ReservationsController, type: :controller do
       movie = create(:movie)
       sheet = create(:sheet)
       schedule = create(:schedule, movie_id: movie.id)
-      post :create, params: { reservation: { name: "TEST_NAME", email: "test@test.com", date: "2019-04-16", sheet_id: sheet.id , schedule_id: schedule.id, movie_id: movie.id }}, session: {}
+
+      post :create,
+           params: {
+             reservation: {
+               name: 'TEST_NAME',
+               email: 'test@test.com',
+               date: '2019-04-16',
+               sheet_id: sheet.id,
+               schedule_id: schedule.id,
+               movie_id: movie.id
+             }
+           },
+           session: {}
 
       expect(response).to have_http_status(302)
     end
@@ -51,9 +66,27 @@ RSpec.describe Admin::ReservationsController, type: :controller do
       movie = create(:movie)
       sheet = create(:sheet)
       schedule = create(:schedule, movie_id: movie.id)
-      # 同じ日付の同じ映画の座席を予約してみる
-      create(:reservation, { sheet_id: sheet.id, schedule_id: schedule.id, date: "2019-04-16" })
-      post :create, params: { reservation: { name: "TEST_NAME", email: "test@test.com", date: "2019-04-16", sheet_id: sheet.id , schedule_id: schedule.id, movie_id: movie.id }}, session: {}
+
+      # 同じ日付・同じシート・同じスケジュールで予約済みにしておく
+      create(
+        :reservation,
+        sheet_id: sheet.id,
+        schedule_id: schedule.id,
+        date: '2019-04-16'
+      )
+
+      post :create,
+           params: {
+             reservation: {
+               name: 'TEST_NAME',
+               email: 'test@test.com',
+               date: '2019-04-16',
+               sheet_id: sheet.id,
+               schedule_id: schedule.id,
+               movie_id: movie.id
+             }
+           },
+           session: {}
 
       expect(response).to have_http_status(400)
     end
@@ -64,16 +97,19 @@ RSpec.describe Admin::ReservationsController, type: :controller do
       movie = create(:movie)
       sheet = create(:sheet)
       schedule = create(:schedule, movie_id: movie.id)
-      @reservation = create(:reservation, { sheet_id: sheet.id, schedule_id: schedule.id })
+      @reservation = create(:reservation, {
+                              sheet_id: sheet.id,
+                              schedule_id: schedule.id
+                            })
 
       get :show, params: { id: @reservation.id }
     end
 
     it 'name, email, schedule_id, sheet_idのすべてを受け取るフォームがあること' do
-      expect(response.body).to include("name")
-      expect(response.body).to include("email")
-      expect(response.body).to include("schedule_id")
-      expect(response.body).to include("sheet_id")
+      expect(response.body).to include('name')
+      expect(response.body).to include('email')
+      expect(response.body).to include('schedule_id')
+      expect(response.body).to include('sheet_id')
     end
 
     it 'DB上のデータがすでにフォームに入っていること' do
@@ -83,26 +119,42 @@ RSpec.describe Admin::ReservationsController, type: :controller do
   end
 
   describe 'Station12 PUT /admin/reservations/:id' do
-
     it 'schedule_id, sheet_id, name, emailのすべてがあるときだけ302にすること' do
-      # NOTE: とりあえず更新が成功するかだけ確認する
       movie = create(:movie)
       sheet = create(:sheet)
       schedule = create(:schedule, movie_id: movie.id)
-      reservation = create(:reservation, { sheet_id: sheet.id, schedule_id: schedule.id, date: "2019-04-16" }) # NOTE: FactoryBotの影響でdateが自動生成しないため、ここでdateを指定する
+      reservation = create(:reservation, {
+                             sheet_id: sheet.id,
+                             schedule_id: schedule.id,
+                             date: '2019-04-16'
+                           })
 
-      put :update, params: { id: reservation.id, reservation: { name: "TEST_NAME_updated", email: "test_email_updated@test.com", schedule_id: schedule.id, sheet_id: sheet.id }}, session: {}
+      put :update,
+          params: {
+            id: reservation.id,
+            reservation: {
+              name: 'TEST_NAME_updated',
+              email: 'test_email_updated@test.com',
+              schedule_id: schedule.id,
+              sheet_id: sheet.id
+            }
+          },
+          session: {}
+
       expect(response).to have_http_status(302)
     end
   end
 
   describe 'Station12 DELETE /admin/reservations/:id' do
-
     it 'reservationテーブルから:idのレコードを物理削除していること' do
       movie = create(:movie)
       sheet = create(:sheet)
       schedule = create(:schedule, movie_id: movie.id)
-      reservation = create(:reservation, { sheet_id: sheet.id, schedule_id: schedule.id, date: "2019-04-16" }) # NOTE: FactoryBotの影響でdateが自動生成しないため、ここでdateを指定する
+      reservation = create(:reservation, {
+                             sheet_id: sheet.id,
+                             schedule_id: schedule.id,
+                             date: '2019-04-16'
+                           })
 
       expect do
         delete :destroy, params: { id: reservation.id }, session: {}
