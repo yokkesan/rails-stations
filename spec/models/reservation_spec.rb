@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Reservation, type: :model do
@@ -5,7 +7,7 @@ RSpec.describe Reservation, type: :model do
     it '同一スクリーン・同一座席・同一日付で重複予約できないこと' do
       theater = create(:theater)
       screen = create(:screen, theater: theater)
-      movie = create(:movie)
+      create(:movie)
       schedule = create(:schedule, screen: screen)
       sheet = create(:sheet)
       date = '2025-05-03'

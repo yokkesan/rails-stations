@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MoviesController < ApplicationController
   def index
     @movies = Movie.all
@@ -18,7 +20,7 @@ class MoviesController < ApplicationController
     @movie = Movie.find(params[:id])
     @schedules = @movie.schedules
     @reservations = Reservation.includes(:schedule, :sheet)
-                              .where(schedule_id: @schedules.ids, date: Date.today..)
+                               .where(schedule_id: @schedules.ids, date: Date.today..)
   end
 
   # 座席予約ページ
@@ -28,7 +30,7 @@ class MoviesController < ApplicationController
     return unless find_schedule_or_redirect
 
     load_sheets_and_reservations
-    Rails.logger.debug "🔍 @schedule: #{@schedule.inspect}" 
+    Rails.logger.debug "🔍 @schedule: #{@schedule.inspect}"
   end
 
   private
