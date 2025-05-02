@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Schedule < ApplicationRecord
   belongs_to :movie
   belongs_to :screen # ← スクリーンへの関連を追加

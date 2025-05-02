@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class MoviesController < ApplicationController
   def index
     @movies = Movie.all
@@ -20,15 +18,17 @@ class MoviesController < ApplicationController
     @movie = Movie.find(params[:id])
     @schedules = @movie.schedules
     @reservations = Reservation.includes(:schedule, :sheet)
-                               .where(schedule_id: @schedules.ids, date: Date.today..)
+                              .where(schedule_id: @schedules.ids, date: Date.today..)
   end
 
   # 座席予約ページ
   def reservation
-    find_movie_or_redirect and return
-    validate_schedule_params or return
-    find_schedule_or_redirect and return
+    return unless find_movie_or_redirect
+    return unless validate_schedule_params
+    return unless find_schedule_or_redirect
+
     load_sheets_and_reservations
+    Rails.logger.debug "🔍 @schedule: #{@schedule.inspect}" 
   end
 
   private
@@ -52,10 +52,12 @@ class MoviesController < ApplicationController
 
   def find_schedule_or_redirect
     @schedule = Schedule.find_by(id: params[:schedule_id])
-    return true if @schedule
-
-    redirect_to movie_path(@movie), alert: 'スケジュールが見つかりません'
-    false
+    if @schedule
+      true
+    else
+      redirect_to movie_path(@movie), alert: 'スケジュールが見つかりません'
+      false
+    end
   end
 
   def load_sheets_and_reservations

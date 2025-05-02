@@ -9,6 +9,8 @@
   <table>
     <thead>
       <tr>
+        <th>劇場</th>
+        <th>スクリーン</th>
         <th>開始時間</th>
         <th>終了時間</th>
         <th>予約</th>
@@ -17,6 +19,8 @@
     <tbody>
       <% @schedules.each do |schedule| %>
         <tr>
+          <td><%= schedule.screen.theater.name %></td> <!-- 劇場名 -->
+          <td><%= schedule.screen.name %></td> <!-- スクリーン名 -->
           <td><%= schedule.start_time.strftime("%H:%M") %></td>
           <td><%= schedule.end_time.strftime("%H:%M") %></td>
           <td>
