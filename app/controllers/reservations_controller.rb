@@ -20,14 +20,16 @@ class ReservationsController < ApplicationController
 
     # 重複チェック
     if Reservation.exists?(schedule_id: @reservation.schedule_id,
-                           sheet_id: @reservation.sheet_id,
-                           date: @reservation.date)
+                          sheet_id: @reservation.sheet_id,
+                          date: @reservation.date)
       movie_id = @reservation.schedule.movie_id
       schedule_id = @reservation.schedule_id
       date = @reservation.date
       redirect_to "/movies/#{movie_id}/reservation?schedule_id=#{schedule_id}&date=#{date}",
                   alert: 'その座席はすでに予約済みです'
     elsif @reservation.save
+      # メール送信を追加
+      ReservationMailer.confirmation_email(@reservation).deliver_now
       redirect_to movie_path(@reservation.schedule.movie_id), notice: '予約が完了しました'
     else
       # バリデーションなどに失敗した場合

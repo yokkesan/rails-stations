@@ -8,6 +8,22 @@ Rails.application.configure do
   # In the development environment your application's code is reloaded any time
   # it changes. This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.
+
+  # ActionMailer メール送信設定（Mailtrap 用）
+config.action_mailer.delivery_method = :smtp
+config.action_mailer.smtp_settings = {
+  user_name: 'b5bc1f3d249e5d', 
+  password: '0533fa669c4232', 
+  address: 'sandbox.smtp.mailtrap.io',
+  domain: 'sandbox.smtp.mailtrap.io',
+  port: 587,
+  authentication: :plain
+}
+
+config.action_mailer.perform_deliveries = true
+config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+
+
   config.enable_reloading = true
 
   # Do not eager load code on boot.
@@ -39,7 +55,7 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = true
 
   config.action_mailer.perform_caching = false
 

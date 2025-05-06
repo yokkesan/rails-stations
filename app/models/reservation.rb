@@ -9,7 +9,7 @@ class Reservation < ApplicationRecord
   validates :schedule_id, presence: true
   validates :sheet_id, presence: true
 
-  # 🔽 修正ポイント：同じ screen_id 内でユニーク制約をかける
+  # screen_id 内でユニーク制約をかける
   validate :unique_reservation_within_screen
 
   private
