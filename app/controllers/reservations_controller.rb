@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 class ReservationsController < ApplicationController
   def new
     # dateとsheet_idがなければ400 Bad Requestで返す（テスト通過のため）

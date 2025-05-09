@@ -1,3 +1,4 @@
+# encoding: utf-8
 class ReservationMailer < ApplicationMailer
     default from: 'it.yteshim@gmail.com'
 
@@ -14,5 +15,5 @@ class ReservationMailer < ApplicationMailer
         to: reservation.email,
         subject: '【リマインド】明日の映画予約のお知らせ'
       )
-    end
   end
+end

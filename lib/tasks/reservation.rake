@@ -1,3 +1,4 @@
+# encoding: utf-8
 namespace :reservation do
   desc '前日リマインドメールを送信するタスク'
   task send_reminder: :environment do

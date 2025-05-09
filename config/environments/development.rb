@@ -12,8 +12,8 @@ Rails.application.configure do
   # ActionMailer メール送信設定（Mailtrap 用）
 config.action_mailer.delivery_method = :smtp
 config.action_mailer.smtp_settings = {
-  user_name: 'b5bc1f3d249e5d',
-  password: '0533fa669c4232',
+  user_name: ENV['MAILTRAP_USERNAME'],
+  password:  ENV['MAILTRAP_PASSWORD'],
   address: 'sandbox.smtp.mailtrap.io',
   domain: 'sandbox.smtp.mailtrap.io',
   port: 587,
