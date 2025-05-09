@@ -1,0 +1,34 @@
+<h2><%= @movie.name %>（<%= @date %>）</h2>
+<p>開始時刻：<%= @schedule.start_time.strftime("%H:%M") %></p>
+<p>終了時刻：<%= @schedule.end_time.strftime("%H:%M") %></p>
+
+<h3>座席表</h3>
+
+<% if @sheets.present? %>
+  <table>
+    <tbody>
+      <% @sheets.group_by(&:row).each do |row, seats| %>
+        <tr>
+          <% seats.each do |sheet| %>
+            <td>
+              <% reserved = @reservations.any? { |r| r.sheet_id == sheet.id } %>
+              <% if reserved %>
+                <span style="color: gray;"><%= "#{sheet.row}#{sheet.column}" %><br>予約済み</span>
+              <% else %>
+                <%= link_to "#{sheet.row}#{sheet.column}",
+                    new_movie_schedule_reservation_path(
+                      movie_id: @movie.id,
+                      schedule_id: @schedule.id,
+                      date: @date,
+                      sheet_id: sheet.id
+                    ) %>
+              <% end %>
+            </td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>座席情報が見つかりません</p>
+<% end %>

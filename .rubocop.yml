@@ -1,0 +1,41 @@
+# .rubocop.yml
+AllCops:
+  TargetRubyVersion: 3.3
+
+  # 除外するファイルやディレクトリ
+  Exclude:
+    - 'db/**/*'
+    - 'bin/**/*'
+    - 'vendor/**/*'
+    - 'node_modules/**/*'
+
+# 行の長さに関する設定
+Layout/LineLength:
+  Max: 120
+  Exclude:
+    - 'config/initializers/devise.rb'
+
+# メソッドの行数制限
+Metrics/MethodLength:
+  Max: 15
+
+# クラスの行数制限
+Metrics/ClassLength:
+  Max: 200
+
+Metrics/BlockLength:
+  Max: 150
+  Exclude:
+    - 'spec/station12/reservations_controller_spec.rb'
+
+# ドキュメントコメントの要求を無効化
+Style/Documentation:
+  Enabled: false
+
+# 日本語コメントを許可
+Style/AsciiComments:
+  Enabled: false
+
+# 自動生成された TODO を読み込む
+inherit_from:
+  - .rubocop_todo.yml

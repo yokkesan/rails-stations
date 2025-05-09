@@ -1,0 +1,93 @@
+<table class="section-header">
+  <tr>
+    <th><h1><%= @movie.name %></h1></th>
+  </tr>
+</table>
+
+<table class="movie-info">
+  <tbody>
+    <tr>
+      <td>公開年:</td>
+      <td><%= @movie.year %></td>
+    </tr>
+    <tr>
+      <td>上映状況:</td>
+      <td><%= @movie.is_showing ? "上映中" : "上映予定" %></td>
+    </tr>
+    <tr>
+      <td>概要:</td>
+      <td><%= simple_format(@movie.description) %></td>
+    </tr>
+    <% if @movie.image_url.present? %>
+      <tr>
+        <td>画像:</td>
+        <td><%= image_tag @movie.image_url, alt: @movie.name %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h2>上映スケジュール</h2>
+<% if @schedules.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>劇場</th>
+        <th>スクリーン</th>
+        <th>開始時間</th>
+        <th>終了時間</th>
+        <th>予約</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @schedules.each do |schedule| %>
+        <tr>
+          <td><%= schedule.screen.theater.name %></td> <!-- 劇場名 -->
+          <td><%= schedule.screen.name %></td> <!-- スクリーン名 -->
+          <td><%= schedule.start_time.strftime("%H:%M") %></td>
+          <td><%= schedule.end_time.strftime("%H:%M") %></td>
+          <td>
+            <%= form_with url: reservation_movie_path(@movie), method: :get, local: true do |f| %>
+              <div>
+                <label for="date">日付を選択：</label>
+                <%= select_tag :date, options_for_select((0..6).map { |i| [(Date.today + i).strftime("%Y-%m-%d"), (Date.today + i).strftime("%Y-%m-%d")] }) %>
+              </div>
+              <div>
+                <%= hidden_field_tag :schedule_id, schedule.id %>
+                <%= f.submit "座席を予約する" %>
+              </div>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>現在、上映スケジュールはありません。</p>
+<% end %>
+
+<h2>予約済み座席一覧</h2>
+<% if @reservations.present? %>
+  <table class="movie-table">
+    <thead>
+      <tr>
+        <th>日付</th>
+        <th>開始時刻</th>
+        <th>座席</th>
+        <th>名前</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @reservations.each do |reservation| %>
+        <tr>
+          <td><%= reservation.date %></td>
+          <td><%= reservation.schedule.start_time.strftime("%H:%M") %></td>
+          <td><%= "#{reservation.sheet.row}-#{reservation.sheet.column}" %></td>
+          <td><%= reservation.name %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>まだ予約はありません。</p>
+<% end %>

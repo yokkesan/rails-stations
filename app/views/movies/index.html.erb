@@ -1,28 +1,50 @@
+<% content_for :title, "映画一覧" %>
+
 <h1>映画一覧</h1>
-<table border="1">
-  <tr>
-    <th>ID</th>
-    <th>映画タイトル</th>
-    <th>公開年</th>
-    <th>上映中か</th>
-    <th>概要</th>
-    <th>画像</th>
-    <th>作成日時</th>
-    <th>更新日時</th>
-  </tr>
-  <% @movies.each do |movie| %>
+
+<!-- 検索フォーム -->
+<%= form_with url: movies_path, method: :get, local: true do %>
+  <label for="keyword">キーワード検索:</label>
+  <%= text_field_tag :keyword, params[:keyword], autocomplete: "off" %>
+
+  <label>公開状態:</label>
+  <%= radio_button_tag :is_showing, "", params[:is_showing].blank?, id: "all" %>
+  <label for="all">すべて</label>
+
+  <%= radio_button_tag :is_showing, "1", params[:is_showing] == "1", id: "showing" %>
+  <label for="showing">上映中</label>
+
+  <%= radio_button_tag :is_showing, "0", params[:is_showing] == "0", id: "upcoming" %>
+  <label for="upcoming">上映予定</label>
+
+  <%= submit_tag "検索" %>
+<% end %>
+
+<table>
+  <thead>
     <tr>
-      <td><%= movie.id %></td>
-      <td><%= movie.name %></td>
-      <td><%= movie.year %></td>
-      <td><%= movie.is_showing ? "上映中" : "上映終了" %></td>
-      <td><%= movie.description %></td>
-      <td>
-        <% image_url = movie.image_url.presence || "https://picsum.photos/100/150" %>
-        <img src="<%= image_url %>" alt="映画ポスター" width="100">
-      </td>
-      <td><%= movie.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
-      <td><%= movie.updated_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+      <th>ID</th>
+      <th>タイトル</th>
+      <th>公開年</th>
+      <th>上映状況</th>
+      <th>概要</th>
+      <th>画像</th>
+      <th>詳細</th>
     </tr>
-  <% end %>
+  </thead>
+  <tbody>
+    <% @movies.each do |movie| %>
+      <tr>
+        <td><%= movie.id %></td>
+        <td><%= movie.name %></td>
+        <td><%= movie.year %></td>
+        <td><%= movie.is_showing ? '上映中' : '上映予定' %></td>
+        <td><%= simple_format(movie.description) %></td>
+        <td><%= link_to "画像", movie.image_url, target: "_blank" %></td>
+        <td>
+          <%= link_to "詳細", movie_path(movie), class: "btn btn-primary" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
 </table>

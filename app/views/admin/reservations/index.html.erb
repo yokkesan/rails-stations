@@ -1,0 +1,31 @@
+<h1>予約一覧</h1>
+
+<%= link_to '新規予約追加', new_admin_reservation_path, class: 'btn btn-primary' %>
+
+<table>
+  <thead>
+    <tr>
+      <th>映画タイトル</th>
+      <th>スケジュール</th>
+      <th>座席</th>
+      <th>日付</th>
+      <th>予約者名</th>
+      <th>メールアドレス</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @reservations.each do |reservation| %>
+      <tr>
+        <td><%= reservation.schedule.movie.name %></td>
+        <td><%= reservation.schedule.start_time.strftime("%Y-%m-%d %H:%M") %></td>
+        <td><%= "#{reservation.sheet.row}#{reservation.sheet.column}" %></td>
+        <td><%= reservation.date %></td>
+        <td><%= reservation.name %></td>
+        <td><%= reservation.email %></td>
+        <td>
+          <%= link_to '編集', edit_admin_reservation_path(reservation) %> |
+          <%= button_to '削除', admin_reservation_path(reservation), method: :delete, data: { turbo_confirm: '本当に削除してもいいですか？' }, class: 'btn btn-danger', form: { class: "inline" } %>
+    <% end %>
+  </tbody>
+</table>

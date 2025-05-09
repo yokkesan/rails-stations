@@ -1,0 +1,43 @@
+<h1>映画詳細</h1>
+
+<p><strong>タイトル：</strong> <%= @movie.name %></p>
+<p><strong>公開年：</strong> <%= @movie.year %></p>
+<p><strong>上映中：</strong> <%= @movie.is_showing ? "上映中" : "未上映" %></p>
+<p><strong>概要：</strong> <%= @movie.description %></p>
+<p><strong>画像URL：</strong> <%= link_to @movie.image_url, @movie.image_url %></p>
+<p><img src="<%= @movie.image_url %>" alt="<%= @movie.name %>" width="300"></p>
+
+<% if @movie.schedules.first&.screen %>
+  <p><strong>劇場：</strong> <%= @movie.schedules.first.screen.theater.name %></p>
+  <p><strong>スクリーン：</strong> <%= @movie.schedules.first.screen.name %></p>
+<% end %>
+
+<h2>上映スケジュール</h2>
+<% if @movie.schedules.present? %>
+  <ul>
+    <% @movie.schedules.each do |schedule| %>
+      <li><%= schedule.start_time.strftime("%Y年%m月%d日 %H:%M") %> 〜 <%= schedule.end_time.strftime("%H:%M") %></li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>スケジュールが登録されていません。</p>
+<% end %>
+
+<h2>予約済み座席一覧</h2>
+
+<% if @reservations.present? %>
+  <ul>
+    <% @reservations.each do |reservation| %>
+      <li>
+        日付: <%= reservation.date %> /
+        開始時間: <%= reservation.schedule.start_time.strftime("%H:%M") %> /
+        座席: <%= reservation.sheet.row %>-<%= reservation.sheet.column %> /
+        名前: <%= reservation.name %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>まだ予約はありません。</p>
+<% end %>
+
+<%= link_to '一覧に戻る', admin_movies_path, class: 'btn btn-secondary' %>
