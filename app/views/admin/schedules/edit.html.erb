@@ -5,18 +5,18 @@
 
 <%= form_with model: [:admin, @schedule], url: admin_schedule_path(@schedule), method: :put do |f| %>
   <div>
-    <label>開始時刻:</label>
-    <%= f.time_field :start_time, required: true, value: @schedule.start_time.strftime("%H:%M") %>
+    <label>開始日時:</label>
+    <%= f.datetime_local_field :start_time, required: true, value: @schedule.start_time.strftime("%Y-%m-%dT%H:%M") %>
   </div>
 
   <div>
-    <label>終了時刻:</label>
-    <%= f.time_field :end_time, required: true, value: @schedule.end_time.strftime("%H:%M") %>
+    <label>終了日時:</label>
+    <%= f.datetime_local_field :end_time, required: true, value: @schedule.end_time.strftime("%Y-%m-%dT%H:%M") %>
   </div>
 
   <div class="field">
-  <%= f.label :screen_id, "スクリーン" %>
-  <%= f.collection_select :screen_id, Screen.all, :id, :name, prompt: "選択してください" %>
+    <%= f.label :screen_id, "スクリーン" %>
+    <%= f.collection_select :screen_id, Screen.all, :id, :name, prompt: "選択してください" %>
   </div>
 
   <%= f.submit "更新", class: "btn btn-primary" %>

@@ -3,7 +3,6 @@
     <th><h1><%= @movie.name %></h1></th>
   </tr>
 </table>
-
 <table class="movie-info">
   <tbody>
     <tr>
@@ -42,15 +41,15 @@
     <tbody>
       <% @schedules.each do |schedule| %>
         <tr>
-          <td><%= schedule.screen.theater.name %></td> <!-- 劇場名 -->
-          <td><%= schedule.screen.name %></td> <!-- スクリーン名 -->
+          <td><%= schedule.screen.theater.name %></td>
+          <td><%= schedule.screen.name %></td>
           <td><%= schedule.start_time.strftime("%H:%M") %></td>
           <td><%= schedule.end_time.strftime("%H:%M") %></td>
           <td>
             <%= form_with url: reservation_movie_path(@movie), method: :get, local: true do |f| %>
               <div>
-                <label for="date">日付を選択：</label>
-                <%= select_tag :date, options_for_select((0..6).map { |i| [(Date.today + i).strftime("%Y-%m-%d"), (Date.today + i).strftime("%Y-%m-%d")] }) %>
+                <label for="date">上映日：</label>
+                <%= select_tag :date, options_for_select([[schedule.start_time.to_date.strftime('%Y-%m-%d'), schedule.start_time.to_date.strftime('%Y-%m-%d')]]) %>
               </div>
               <div>
                 <%= hidden_field_tag :schedule_id, schedule.id %>
