@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 Rails.application.routes.draw do
+  get 'rankings/index'
   devise_for :users, controllers: {
     registrations: 'users/registrations'
   }
@@ -15,6 +16,8 @@ Rails.application.routes.draw do
 
   # 座席一覧
   resources :sheets, only: [:index]
+  # ランキング確認
+  resources :rankings, only: [:index]
 
   # 予約登録
   resources :reservations, only: [:create]
