@@ -1,17 +1,18 @@
-# encoding: utf-8
 namespace :movie_rankings do
   desc "過去30日分の予約数に基づいて映画ランキングを更新する"
   task update: :environment do
+    if ENV['CRON'] == 'true'
+      Rails.logger = Logger.new(Rails.root.join('log/cron.log'))
+    end
+
     today = Date.today
     start_date = today - 30
 
     Rails.logger.info "[MovieRanking] 集計処理開始: #{start_date}〜#{today}"
 
-    # 既存の今日のランキングを削除（再集計のため）
     deleted_count = MovieRanking.where(rank_date: today).delete_all
     Rails.logger.info "[MovieRanking] 本日分のランキングを削除: #{deleted_count}件"
 
-    # 過去30日間の予約数を movie_id ごとに集計
     counts = Reservation.joins(schedule: :movie)
                         .where(date: start_date..today)
                         .group('movies.id')
