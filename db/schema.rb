@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_11_024231) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_12_043100) do
   create_table "movie_rankings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "movie_id", null: false
     t.integer "total_reservations"
     t.date "rank_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["movie_id", "rank_date"], name: "index_movie_rankings_on_movie_id_and_rank_date", unique: true
     t.index ["movie_id"], name: "index_movie_rankings_on_movie_id"
   end
 

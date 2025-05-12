@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ReservationsController < ApplicationController
   def new
     if params[:date].blank? || params[:sheet_id].blank?

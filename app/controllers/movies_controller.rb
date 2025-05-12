@@ -4,8 +4,8 @@ class MoviesController < ApplicationController
   def index
     @movies = Movie.all
     @today_rankings = MovieRanking.includes(:movie)
-                      .where(rank_date: Date.today)
-                      .order(total_reservations: :desc)
+                                  .where(rank_date: Date.today)
+                                  .order(total_reservations: :desc)
 
     # 検索処理
     if params[:keyword].present?
@@ -20,10 +20,10 @@ class MoviesController < ApplicationController
 
   # 映画詳細ページ
   def show
-  @movie = Movie.find(params[:id])
-  @schedules = @movie.schedules.includes(:screen).order(:start_time)
-  @reservations = Reservation.includes(:schedule, :sheet)
-                  .where(schedule_id: @schedules.ids, date: Date.today..)
+    @movie = Movie.find(params[:id])
+    @schedules = @movie.schedules.includes(:screen).order(:start_time)
+    @reservations = Reservation.includes(:schedule, :sheet)
+                               .where(schedule_id: @schedules.ids, date: Date.today..)
   end
 
   # 座席予約ページ

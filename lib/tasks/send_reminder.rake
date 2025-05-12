@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # namespace :reservation do
 #     desc '予約リマインドメールを送信する'
 #     task send_reminder: :environment do

@@ -8,7 +8,7 @@ class Reservation < ApplicationRecord
   validates :date, presence: true
   validates :schedule_id, presence: true
   validates :sheet_id, presence: true
-  validates :schedule_id, uniqueness: { scope: [:sheet_id, :date], message: '・座席・日付の組み合わせはすでに存在します' }
+  validates :schedule_id, uniqueness: { scope: %i[sheet_id date], message: '・座席・日付の組み合わせはすでに存在します' }
   validate :date_matches_schedule
 
   private
@@ -17,8 +17,8 @@ class Reservation < ApplicationRecord
   def date_matches_schedule
     return if schedule.nil? || date.nil?
 
-    if date != schedule.start_time.to_date
-      errors.add(:date, 'はスケジュールの上映開始日と一致する必要があります')
-    end
+    return unless date != schedule.start_time.to_date
+
+    errors.add(:date, 'はスケジュールの上映開始日と一致する必要があります')
   end
 end
