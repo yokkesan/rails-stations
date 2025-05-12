@@ -2,6 +2,22 @@
 
 <h1>映画一覧</h1>
 
+<!-- 🔥 ランキング表示を追加 -->
+<h2>🎬 人気作品ランキング（過去30日集計）</h2>
+
+<% if @today_rankings.present? %>
+  <ol>
+    <% @today_rankings.each do |ranking| %>
+      <li>
+        <%= link_to ranking.movie.name, movie_path(ranking.movie) %>
+        （<%= ranking.total_reservations %> 件）
+      </li>
+    <% end %>
+  </ol>
+<% else %>
+  <p>本日のランキングデータはまだありません。</p>
+<% end %>
+
 <!-- 検索フォーム -->
 <%= form_with url: movies_path, method: :get, local: true do %>
   <label for="keyword">キーワード検索:</label>

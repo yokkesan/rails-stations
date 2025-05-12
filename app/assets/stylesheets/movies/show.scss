@@ -1,0 +1,32 @@
+.section-header {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+  
+    th {
+      background-color: #007bff;
+      color: #fff;
+      padding: 10px;
+      text-align: left;
+      font-size: 1.5rem;
+    }
+  
+    h1 {
+      margin: 0;
+    }
+  }
+  
+  .movie-info {
+    width: 100%;
+    border-collapse: collapse;
+    td {
+      padding: 8px;
+      border: 1px solid #ddd;
+    }
+  
+    td:first-child {
+      font-weight: bold;
+      width: 120px;
+      background-color: #f2f2f2;
+    }
+  }

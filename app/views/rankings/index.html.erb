@@ -1,0 +1,25 @@
+¥<h1>📅 ランキング履歴</h1>
+
+<%= form_with url: rankings_path, method: :get, local: true do %>
+  <label for="date">日付を選択：</label>
+  <%= date_field_tag :date, params[:date], max: Date.today %>
+  <%= submit_tag "表示", class: "btn btn-primary" %>
+<% end %>
+
+<% if @selected_date.present? %>
+  <h2><%= @selected_date.strftime("%Y年%m月%d日") %> のランキング</h2>
+
+  <% if @rankings.present? %>
+    <ol>
+      <% @rankings.each_with_index do |ranking, i| %>
+        <li>
+          第<%= i + 1 %>位：
+          <%= link_to ranking.movie.name, movie_path(ranking.movie) %>
+          （予約数：<%= ranking.total_reservations %>件）
+        </li>
+      <% end %>
+    </ol>
+  <% else %>
+    <p>この日のランキングは存在しません。</p>
+  <% end %>
+<% end %>

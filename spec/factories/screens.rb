@@ -2,6 +2,7 @@
 
 FactoryBot.define do
   factory :screen do
-    name { 'MyString' }
+    name { "スクリーン#{rand(1..100)}" }
+    association :theater
   end
 end

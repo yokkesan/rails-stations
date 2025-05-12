@@ -6,7 +6,7 @@ module Admin
 
     # スケジュール一覧
     def index
-      @movies = Movie.includes(:schedules).where.not(schedules: { id: nil })
+      @movies = Movie.includes(:schedules).order(:id)
     end
 
     # スケジュール詳細（編集ページ）

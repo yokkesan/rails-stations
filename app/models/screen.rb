@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-# app/models/screen.rb
 class Screen < ApplicationRecord
-  has_many :schedules
+  belongs_to :theater
+  has_many :schedules, dependent: :destroy
+
+  validates :name, presence: true
 end

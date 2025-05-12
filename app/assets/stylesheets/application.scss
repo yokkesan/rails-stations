@@ -13,6 +13,16 @@
  *= require_tree .
  *= require_self
  */
+
+ h1, h2 {
+    background-color: #007bff; // ブルー
+    color: white;
+    padding: 10px 16px;
+    border-radius: 4px;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
  @import "movies/index";
  @import "admin";
  @import "admin/movies/index";

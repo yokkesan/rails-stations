@@ -1,8 +1,5 @@
-# frozen_string_literal: true
-
 class ReservationsController < ApplicationController
   def new
-    # dateとsheet_idがなければ400 Bad Requestで返す（テスト通過のため）
     if params[:date].blank? || params[:sheet_id].blank?
       head :bad_request
       return
@@ -18,20 +15,16 @@ class ReservationsController < ApplicationController
   def create
     @reservation = Reservation.new(reservation_params)
 
-    # 重複チェック
-    if Reservation.exists?(schedule_id: @reservation.schedule_id,
-                           sheet_id: @reservation.sheet_id,
-                           date: @reservation.date)
-      movie_id = @reservation.schedule.movie_id
-      schedule_id = @reservation.schedule_id
-      date = @reservation.date
-      redirect_to "/movies/#{movie_id}/reservation?schedule_id=#{schedule_id}&date=#{date}",
-                  alert: 'その座席はすでに予約済みです'
-    elsif @reservation.save
+    if @reservation.save
+      ReservationMailer.confirmation_email(@reservation).deliver_now
       redirect_to movie_path(@reservation.schedule.movie_id), notice: '予約が完了しました'
     else
-      # バリデーションなどに失敗した場合
-      redirect_back fallback_location: '/', alert: '予約に失敗しました'
+      # フォーム再表示用に各データを再取得
+      @schedule = @reservation.schedule
+      @movie = @schedule.movie if @schedule
+      @sheet = @reservation.sheet
+      @date = @reservation.date
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -39,5 +32,12 @@ class ReservationsController < ApplicationController
 
   def reservation_params
     params.require(:reservation).permit(:schedule_id, :sheet_id, :name, :email, :date)
+  end
+
+  def reservation_path_with_params(reservation)
+    movie_id = reservation.schedule&.movie_id
+    schedule_id = reservation.schedule_id
+    date = reservation.date
+    "/movies/#{movie_id}/reservation?schedule_id=#{schedule_id}&date=#{date}"
   end
 end

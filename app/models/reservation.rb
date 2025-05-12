@@ -8,24 +8,17 @@ class Reservation < ApplicationRecord
   validates :date, presence: true
   validates :schedule_id, presence: true
   validates :sheet_id, presence: true
-
-  # 🔽 修正ポイント：同じ screen_id 内でユニーク制約をかける
-  validate :unique_reservation_within_screen
+  validates :schedule_id, uniqueness: { scope: [:sheet_id, :date], message: '・座席・日付の組み合わせはすでに存在します' }
+  validate :date_matches_schedule
 
   private
 
-  def unique_reservation_within_screen
-    return if schedule.nil?
+  # 予約日とスケジュールの上映日を一致させる
+  def date_matches_schedule
+    return if schedule.nil? || date.nil?
 
-    if Reservation.joins(:schedule)
-                  .where(
-                    schedules: { screen_id: schedule.screen_id },
-                    sheet_id: sheet_id,
-                    date: date
-                  )
-                  .where.not(id: id)
-                  .exists?
-      errors.add(:base, 'その座席はすでに予約されています（同一スクリーン内）')
+    if date != schedule.start_time.to_date
+      errors.add(:date, 'はスケジュールの上映開始日と一致する必要があります')
     end
   end
 end

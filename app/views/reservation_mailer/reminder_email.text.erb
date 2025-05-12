@@ -1,0 +1,13 @@
+<%= @reservation.name %> 様
+
+【送信日時（JST）】<%= Time.zone.now.strftime('%Y/%m/%d %H:%M:%S') %>
+
+ご予約いただいた映画の上映が明日に迫っております。
+
+■ 予約内容
+映画館: <%= @reservation.schedule.screen.theater.name %>
+作品名: <%= @reservation.schedule.movie.name %>
+上映開始時刻: <%= @reservation.schedule.start_time.strftime("%Y/%m/%d %H:%M") %>
+座席: <%= @reservation.sheet.row %>列 <%= @reservation.sheet.column %>番
+
+ご来場をお待ちしております。

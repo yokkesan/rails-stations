@@ -7,6 +7,11 @@
 <p><strong>画像URL：</strong> <%= link_to @movie.image_url, @movie.image_url %></p>
 <p><img src="<%= @movie.image_url %>" alt="<%= @movie.name %>" width="300"></p>
 
+<% if @movie.schedules.first&.screen %>
+  <p><strong>劇場：</strong> <%= @movie.schedules.first.screen.theater.name %></p>
+  <p><strong>スクリーン：</strong> <%= @movie.schedules.first.screen.name %></p>
+<% end %>
+
 <h2>上映スケジュール</h2>
 <% if @movie.schedules.present? %>
   <ul>
