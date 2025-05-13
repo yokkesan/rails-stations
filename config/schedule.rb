@@ -1,12 +1,14 @@
-# frozen_string_literal: true
+env :BUNDLE_GEMFILE, '/app/Gemfile'
+env :BUNDLE_PATH, '/usr/local/bundle'
+env :RAILS_ENV, 'production'
 
-ENV['TZ'] = 'Asia/Tokyo'
-set :environment, 'development'
-# メール送信処理
-every 1.day, at: '4:00 pm' do
-  command '/bin/bash -l -c "/app/script/cron_remind.sh >> /app/log/cron.log 2>&1"'
+set :output, '/app/log/cron.log'
+set :environment, 'production'
+
+every 1.day, at: '2:15 pm' do
+  rake 'reservation:send_reminder'
 end
-# ランキング集計処理
-every 1.day, at: '4:00 pm' do
-  command '/bin/bash -l -c "/app/script/cron_movie_ranking.sh >> /app/log/cron.log 2>&1"'
+
+every 1.day, at: '2:15 pm' do
+  rake 'movie_rankings:update'
 end

@@ -55,17 +55,14 @@ group :development, :test do
 end
 
 group :development do
-  # Use console on exceptions pages [https://github.com/rails/web-console]
+  gem 'web-console'
+end
+
+group :development, :production do
   gem 'dotenv-rails'
   gem 'erb_lint', require: false
   gem 'rubocop', require: false
-  gem 'web-console'
   gem 'whenever', require: false
-  # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
-  # gem "rack-mini-profiler"
-
-  # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
-  # gem "spring"
 end
 
 gem 'devise'
