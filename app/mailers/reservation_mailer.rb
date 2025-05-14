@@ -2,7 +2,7 @@
 
 class ReservationMailer < ApplicationMailer
   default from: 'it.yteshim@gmail.com'
-  #メール上限のため停止
+  # メール上限のため停止
   # def confirmation_email(reservation)
   #   @reservation = reservation
   #   mail(

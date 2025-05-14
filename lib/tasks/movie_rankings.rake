@@ -1,4 +1,3 @@
-# encoding: utf-8
 # frozen_string_literal: true
 
 namespace :movie_rankings do
@@ -36,7 +35,7 @@ namespace :movie_rankings do
 
       done_time = Time.zone.now.strftime('%Y-%m-%d %H:%M:%S')
       Rails.logger.info "[MovieRanking] 集計処理完了（#{counts.size} 件、完了時刻: #{done_time}）"
-    rescue => e
+    rescue StandardError => e
       Rails.logger.error "[MovieRanking] エラー発生: #{e.class} - #{e.message}"
       Rails.logger.error e.backtrace.join("\n")
       raise e

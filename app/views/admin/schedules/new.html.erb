@@ -1,9 +1,21 @@
 <h1>新規上映スケジュール追加</h1>
 
-<p><strong>作品ID:</strong> <%= @movie.id %></p>
-<p><strong>作品名:</strong> <%= @movie.name %></p>
+<% if @schedule.errors.any? %>
+  <div class="alert alert-danger">
+    <ul>
+      <% @schedule.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
 
-<%= form_with(model: [@movie, @schedule], url: admin_movie_schedules_path(@movie), local: true) do |form| %>
+<%= form_with(model: [:admin, @schedule], local: true) do |form| %>
+  <div class="field">
+    <%= form.label :movie_id, "作品" %><br>
+    <%= @schedule.movie.name %>
+  </div>
+
   <div class="field">
     <%= form.label :start_time, "開始日時" %><br>
     <%= form.datetime_local_field :start_time %>
@@ -16,7 +28,11 @@
 
   <div class="field">
     <%= form.label :screen_id, "スクリーン" %><br>
-    <%= form.collection_select :screen_id, Screen.all, :id, :name, prompt: "選択してください" %>
+    <%= form.collection_select :screen_id,
+          @screens,
+          :id,
+          ->(screen) { "#{screen.name}（#{screen.theater.name}）" },
+          prompt: "選択してください" %>
   </div>
 
   <div class="actions">

@@ -1,21 +1,23 @@
 <h1>上映スケジュール一覧</h1>
 
-<% @movies.each do |movie| %>
-  <h2>作品ID: <%= movie.id %> - <%= movie.name %></h2>
+<%= form_with url: admin_schedules_path, method: :get, local: true do %>
+  <label for="theater_id">🎦 劇場で絞り込み：</label>
+  <%= select_tag :theater_id,
+      options_from_collection_for_select(@theaters, :id, :name, @selected_theater_id),
+      prompt: "全ての劇場" %>
+  <%= submit_tag "表示" %>
+  <p>
+  <%= link_to '＋新規スケジュール追加', new_admin_movie_schedule_path(Movie.first) %>
+  </p>
+<% end %>
 
-  <% if movie.schedules.any? %>
-    <ul>
-      <% movie.schedules.each do |schedule| %>
-        <li>
-          開始時刻: <%= schedule.start_time.strftime("%H:%M") %>
-          - 終了時刻: <%= schedule.end_time.strftime("%H:%M") %>
-          <%= link_to "詳細", admin_schedule_path(schedule) %>
-        </li>
-      <% end %>
-    </ul>
-  <% else %>
-    <p style="color: gray;">スケジュールは未登録です</p>
-  <% end %>
+<hr>
 
-  <%= link_to "＋スケジュール追加", new_admin_movie_schedule_path(movie), class: "btn btn-primary" %>
+<% @schedules.each do |schedule| %>
+  <div style="margin-bottom: 1rem;">
+    <strong>作品ID: <%= schedule.movie.id %> - <%= schedule.movie.name %></strong><br>
+    ・開始時刻: <%= schedule.start_time.strftime("%H:%M") %> - 終了時刻: <%= schedule.end_time.strftime("%H:%M") %><br>
+    ・スクリーン: <%= schedule.screen.name %>（劇場: <%= schedule.screen.theater.name %>）<br>
+    <%= link_to "詳細", admin_schedule_path(schedule) %>
+  </div>
 <% end %>

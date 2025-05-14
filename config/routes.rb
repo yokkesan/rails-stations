@@ -28,7 +28,7 @@ Rails.application.routes.draw do
     resources :movies, only: %i[index new create edit update destroy show] do
       resources :schedules, only: %i[new create]
     end
-    resources :schedules, only: %i[index show update destroy edit]
+    resources :schedules, only: %i[index show new update destroy edit create]
     resources :reservations
     resources :theaters
   end

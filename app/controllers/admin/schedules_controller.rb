@@ -6,28 +6,36 @@ module Admin
 
     # スケジュール一覧
     def index
-      @movies = Movie.includes(:schedules).order(:id)
+      @theaters = Theater.all
+
+      if params[:theater_id].present?
+        screens = Screen.where(theater_id: params[:theater_id])
+        @schedules = Schedule.where(screen_id: screens.select(:id)).includes(:movie, :screen).order(:start_time)
+        @selected_theater_id = params[:theater_id]
+      else
+        @schedules = Schedule.includes(:movie, :screen).order(:start_time)
+        @selected_theater_id = nil
+      end
     end
 
     # スケジュール詳細（編集ページ）
     def show; end
 
-    # スケジュール作成ページ（映画ごと）
+    # スケジュール作成ページ
     def new
       @movie = Movie.find(params[:movie_id])
       @schedule = @movie.schedules.build
+      @screens = @movie.theater.screens  # 劇場に紐づくスクリーンのみ取得
     end
 
     # スケジュール登録処理
     def create
-      @movie = Movie.find(params[:movie_id])
-      @schedule = @movie.schedules.build(schedule_params)
+      @schedule = Schedule.new(schedule_params)
 
       if @schedule.save
         flash[:notice] = 'スケジュールが登録されました'
-        redirect_to edit_admin_movie_path(@movie)
+        redirect_to admin_schedules_path
       else
-        # 💥 ここでバリデーションエラーの内容をログに出す
         puts '=== バリデーションエラー ==='
         puts @schedule.errors.full_messages
 
@@ -69,7 +77,7 @@ module Admin
     end
 
     def schedule_params
-      params.require(:schedule).permit(:start_time, :end_time, :screen_id)
+      params.require(:schedule).permit(:movie_id, :start_time, :end_time, :screen_id)
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 env :BUNDLE_GEMFILE, '/app/Gemfile'
 env :BUNDLE_PATH, '/usr/local/bundle'
 env :RAILS_ENV, 'production'
