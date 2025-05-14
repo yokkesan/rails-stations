@@ -13,8 +13,11 @@ namespace :movie_rankings do
 
       Rails.logger.info "[MovieRanking] 集計処理開始（#{now}）: #{start_date}〜#{today}"
 
+      # 今日のランキングを示す Ranking を取得または作成
+      ranking = Ranking.find_or_create_by!(name: '日次ランキング', rank_date: today)
+
       # 今日のランキングを削除（再集計のため）
-      deleted_count = MovieRanking.where(rank_date: today).delete_all
+      deleted_count = MovieRanking.where(rank_date: today, ranking_id: ranking.id).delete_all
       Rails.logger.info "[MovieRanking] 本日分のランキングを削除: #{deleted_count}件"
 
       # 過去30日間の予約数を movie_id ごとに集計
@@ -27,6 +30,7 @@ namespace :movie_rankings do
       counts.each do |movie_id, count|
         MovieRanking.create!(
           movie_id: movie_id,
+          ranking_id: ranking.id,
           total_reservations: count,
           rank_date: today
         )

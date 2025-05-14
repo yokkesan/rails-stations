@@ -4,10 +4,8 @@ module Admin
   class SchedulesController < ApplicationController
     before_action :set_schedule, only: %i[show edit update destroy]
 
-    # スケジュール一覧
     def index
       @theaters = Theater.all
-
       if params[:theater_id].present?
         screens = Screen.where(theater_id: params[:theater_id])
         @schedules = Schedule.where(screen_id: screens.select(:id)).includes(:movie, :screen).order(:start_time)
@@ -18,17 +16,17 @@ module Admin
       end
     end
 
-    # スケジュール詳細（編集ページ）
-    def show; end
+    def show
+      @schedule = Schedule.find(params[:id])
+      @movie = @schedule.movie
+    end
 
-    # スケジュール作成ページ
     def new
       @movie = Movie.find(params[:movie_id])
       @schedule = @movie.schedules.build
-      @screens = @movie.theater.screens # 劇場に紐づくスクリーンのみ取得
+      @screens = @movie.theater.screens
     end
 
-    # スケジュール登録処理
     def create
       @schedule = Schedule.new(schedule_params)
 
@@ -39,17 +37,14 @@ module Admin
         puts '=== バリデーションエラー ==='
         puts @schedule.errors.full_messages
 
+        @movie = Movie.find(schedule_params[:movie_id])
+        @screens = @movie.theater.screens
+
         flash.now[:alert] = '登録に失敗しました'
         render :new, status: :unprocessable_entity
       end
     end
 
-    def show
-      @schedule = Schedule.find(params[:id])
-      @movie = @schedule.movie
-    end
-
-    # スケジュール更新
     def update
       if @schedule.update(schedule_params)
         flash[:notice] = 'スケジュールが更新されました'
@@ -60,7 +55,6 @@ module Admin
       end
     end
 
-    # スケジュール削除
     def destroy
       @schedule.destroy
       flash[:notice] = 'スケジュールが削除されました'

@@ -1,7 +1,6 @@
-# frozen_string_literal: true
-
 class Movie < ApplicationRecord
-  has_many :schedules, dependent: :destroy
-  validates :name, presence: true, uniqueness: true
   belongs_to :theater
+  has_many :schedules, dependent: :destroy
+  has_many :movie_rankings, dependent: :destroy
+  has_many :rankings, through: :movie_rankings
 end
