@@ -30,6 +30,7 @@ Rails.application.routes.draw do
     end
     resources :schedules, only: %i[index show update destroy edit]
     resources :reservations
+    resources :theaters
   end
   root 'movies#index'
 end

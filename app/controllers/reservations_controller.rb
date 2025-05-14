@@ -15,20 +15,21 @@ class ReservationsController < ApplicationController
   end
 
   def create
-    @reservation = Reservation.new(reservation_params)
+  @reservation = Reservation.new(reservation_params)
 
-    if @reservation.save
-      ReservationMailer.confirmation_email(@reservation).deliver_now
-      redirect_to movie_path(@reservation.schedule.movie_id), notice: '予約が完了しました'
-    else
-      # フォーム再表示用に各データを再取得
-      @schedule = @reservation.schedule
-      @movie = @schedule.movie if @schedule
-      @sheet = @reservation.sheet
-      @date = @reservation.date
-      render :new, status: :unprocessable_entity
+  if @reservation.save
+    # メール送信は一時停止中（上限に達したため）
+    # ReservationMailer.confirmation_email(@reservation).deliver_now
+
+    redirect_to movie_path(@reservation.schedule.movie_id), notice: '予約が完了しました'
+  else
+    @schedule = @reservation.schedule
+    @movie = @schedule.movie if @schedule
+    @sheet = @reservation.sheet
+    @date = @reservation.date
+    render :new, status: :unprocessable_entity
     end
-  end
+   end
 
   private
 

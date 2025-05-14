@@ -12,12 +12,12 @@
 <body>
 <nav style="background-color: #f8f8f8; padding: 10px;">
     <%= link_to "🎬 映画一覧", movies_path %> |
-    <%= link_to "🎟 座席一覧", sheets_path %> |
-    <%= link_to "🛠 管理映画", admin_movies_path %> |
-    <%= link_to "📅 管理スケジュール", admin_schedules_path %> |
-    <%= link_to "📋 管理予約", admin_reservations_path %>
-    <%= link_to "📊 ランキング履歴", rankings_path %> |
-
+  <%= link_to "🎟 座席一覧", sheets_path %> |
+  <%= link_to "🛠 映画管理", admin_movies_path %> |
+  <%= link_to "📅 スケジュール管理", admin_schedules_path %> |
+  <%= link_to "📋 予約管理", admin_reservations_path %> |
+  <%= link_to "📊 ランキング履歴", rankings_path %> |
+  <%= link_to "🎦 劇場一覧", "/admin/theaters" %>
     <% if user_signed_in? %>
   ログイン中：<%= current_user.name %> |
   <%= button_to "ログアウト", destroy_user_session_path, method: :delete, form_class: "inline", class: "btn btn-link" %>

@@ -1,0 +1,14 @@
+<h2><%= action_name == "new" ? "劇場の新規追加" : "劇場の編集" %></h2>
+
+<%= form_with model: [:admin, @theater] do |f| %>
+  <div>
+    <%= f.label :name, "劇場名" %><br>
+    <%= f.text_field :name, required: true %>
+  </div>
+
+  <div>
+    <%= f.submit %>
+  </div>
+<% end %>
+
+<%= link_to "戻る", admin_theaters_path %>

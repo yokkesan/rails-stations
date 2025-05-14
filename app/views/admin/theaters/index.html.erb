@@ -1,0 +1,11 @@
+<h2>劇場一覧</h2>
+<%= link_to "＋新規追加", new_admin_theater_path %>
+<ul>
+  <% @theaters.each do |theater| %>
+    <li>
+      <%= theater.name %>
+      [<%= link_to "編集", edit_admin_theater_path(theater) %>]
+      [<%= link_to "削除", admin_theater_path(theater), method: :delete, data: { confirm: "本当に削除しますか？" } %>]
+    </li>
+  <% end %>
+</ul>
