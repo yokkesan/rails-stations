@@ -25,7 +25,7 @@ module Admin
     def new
       @movie = Movie.find(params[:movie_id])
       @schedule = @movie.schedules.build
-      @screens = @movie.theater.screens  # 劇場に紐づくスクリーンのみ取得
+      @screens = @movie.theater.screens # 劇場に紐づくスクリーンのみ取得
     end
 
     # スケジュール登録処理
