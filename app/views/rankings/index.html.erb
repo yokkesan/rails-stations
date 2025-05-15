@@ -1,13 +1,22 @@
-¥<h1>📅 ランキング履歴</h1>
+<h1>📅 ランキング履歴</h1>
 
 <%= form_with url: rankings_path, method: :get, local: true do %>
+  <label for="ranking_type">ランキング種別：</label>
+  <%= select_tag :ranking_type, options_for_select([
+    ['日間', 'daily'],
+    ['週間', 'weekly'],
+    ['月間', 'monthly']
+  ], params[:ranking_type] || 'daily') %>
+
   <label for="date">日付を選択：</label>
   <%= date_field_tag :date, params[:date], max: Date.today %>
+
   <%= submit_tag "表示", class: "btn btn-primary" %>
 <% end %>
 
 <% if @selected_date.present? %>
-  <h2><%= @selected_date.strftime("%Y年%m月%d日") %> のランキング</h2>
+  <% type_label = { 'daily' => '日間', 'weekly' => '週間', 'monthly' => '月間' }[@ranking_type] %>
+  <h2><%= @selected_date.strftime("%Y年%m月%d日") %> の <%= type_label %>ランキング</h2>
 
   <% if @rankings.present? %>
     <ol>
@@ -20,6 +29,6 @@
       <% end %>
     </ol>
   <% else %>
-    <p>この日のランキングは存在しません。</p>
+    <p>この日の <%= type_label %>ランキングは存在しません。</p>
   <% end %>
 <% end %>

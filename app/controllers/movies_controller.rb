@@ -3,19 +3,26 @@
 class MoviesController < ApplicationController
   def index
     @movies = Movie.all
-    @today_rankings = MovieRanking.includes(:movie)
-                                  .where(rank_date: Date.today)
-                                  .order(total_reservations: :desc)
-
     # 検索処理
+    # 検索キーワード
     if params[:keyword].present?
       @movies = @movies.where('name LIKE ? OR description LIKE ?', "%#{params[:keyword]}%", "%#{params[:keyword]}%")
     end
 
-    # 上映状況でフィルタリング
-    return unless params[:is_showing].present?
+    # 上映中 or 上映予定でフィルタ
+    if params[:is_showing].present?
+      @movies = @movies.where(is_showing: params[:is_showing])
+    end
 
-    @movies = @movies.where(is_showing: params[:is_showing])
+    # 最新の月間ランキング
+    ranking = Ranking.where(ranking_type: 'monthly').order(rank_date: :desc).first
+
+    @rankings =
+      if ranking
+        ranking.movie_rankings.includes(:movie).order(total_reservations: :desc)
+      else
+        []
+      end
   end
 
   # 映画詳細ページ

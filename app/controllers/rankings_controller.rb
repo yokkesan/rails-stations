@@ -2,20 +2,22 @@
 
 class RankingsController < ApplicationController
   def index
-    if params[:date].present?
-      selected_date = begin
-        Date.parse(params[:date])
-      rescue StandardError
-        Date.today
+    @selected_date = parse_date(params[:date])
+    @ranking_type = params[:ranking_type].presence || 'daily'
+
+    @ranking = Ranking.find_by(rank_date: @selected_date, ranking_type: @ranking_type)
+
+    @rankings =
+      if @ranking
+        @ranking.movie_rankings.includes(:movie).order(total_reservations: :desc)
+      else
+        []
       end
-      @selected_date = selected_date
-      @rankings = MovieRanking
-                  .includes(:movie)
-                  .where(rank_date: selected_date)
-                  .order(total_reservations: :desc)
-    else
-      @selected_date = nil
-      @rankings = []
-    end
+  end
+
+  private
+
+  def parse_date(date_param)
+    Date.parse(date_param) rescue Date.today
   end
 end

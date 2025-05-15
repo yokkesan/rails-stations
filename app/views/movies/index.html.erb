@@ -3,19 +3,20 @@
 <h1>映画一覧</h1>
 
 <!-- 🔥 ランキング表示を追加 -->
-<h2>🎬 人気作品ランキング（過去30日集計）</h2>
+<<h2>🎬 人気作品ランキング（過去30日集計）</h2>
 
-<% if @today_rankings.present? %>
+<% if @rankings.present? %>
   <ol>
-    <% @today_rankings.each do |ranking| %>
+    <% @rankings.each_with_index do |ranking, i| %>
       <li>
+        第<%= i + 1 %>位：
         <%= link_to ranking.movie.name, movie_path(ranking.movie) %>
-        （<%= ranking.total_reservations %> 件）
+        （予約数：<%= ranking.total_reservations %> 件）
       </li>
     <% end %>
   </ol>
 <% else %>
-  <p>本日のランキングデータはまだありません。</p>
+  <p>月間ランキングデータはまだありません。</p>
 <% end %>
 
 <!-- 検索フォーム -->
