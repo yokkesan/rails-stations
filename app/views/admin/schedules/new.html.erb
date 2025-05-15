@@ -11,10 +11,13 @@
 <% end %>
 
 <%= form_with(model: [:admin, @schedule], local: true) do |form| %>
-  <%= form.hidden_field :movie_id, value: @movie.id %>
   <div class="field">
     <%= form.label :movie_id, "作品" %><br>
-    <%= @schedule.movie.name %>
+    <%= form.collection_select :movie_id,
+          @movies,
+          :id,
+          ->(movie) { "#{movie.name}（#{movie.theater&.name}）" },
+          prompt: "選択してください" %>
   </div>
 
   <div class="field">

@@ -22,28 +22,28 @@ module Admin
     end
 
     def new
-      @movie = Movie.find(params[:movie_id])
-      @schedule = @movie.schedules.build
-      @screens = @movie.theater.screens
-    end
+  @schedule = Schedule.new
+  @movies = Movie.includes(theater: :screens)
+  @screens = Screen.all
+end
 
     def create
-      @schedule = Schedule.new(schedule_params)
+  @schedule = Schedule.new(schedule_params)
 
-      if @schedule.save
-        flash[:notice] = 'スケジュールが登録されました'
-        redirect_to admin_schedules_path
-      else
-        puts '=== バリデーションエラー ==='
-        puts @schedule.errors.full_messages
+  if @schedule.save
+    flash[:notice] = 'スケジュールが登録されました'
+    redirect_to admin_schedules_path
+  else
+    puts '=== バリデーションエラー ==='
+    puts @schedule.errors.full_messages
 
-        @movie = Movie.find(schedule_params[:movie_id])
-        @screens = @movie.theater.screens
+    @movies = Movie.includes(:theater).all
+    @screens = Screen.all
 
-        flash.now[:alert] = '登録に失敗しました'
-        render :new, status: :unprocessable_entity
-      end
-    end
+    flash.now[:alert] = '登録に失敗しました'
+    render :new, status: :unprocessable_entity
+  end
+end
 
     def update
       if @schedule.update(schedule_params)
