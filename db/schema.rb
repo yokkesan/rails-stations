@@ -10,15 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_14_015024) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_15_023444) do
   create_table "movie_rankings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "movie_id", null: false
     t.integer "total_reservations"
     t.date "rank_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["movie_id", "rank_date"], name: "index_movie_rankings_on_movie_id_and_rank_date", unique: true
+    t.bigint "ranking_id", null: false
+    t.index ["movie_id", "ranking_id", "rank_date"], name: "index_movie_rankings_on_movie_ranking_and_date", unique: true
     t.index ["movie_id"], name: "index_movie_rankings_on_movie_id"
+    t.index ["ranking_id"], name: "index_movie_rankings_on_ranking_id"
   end
 
   create_table "movies", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -32,6 +34,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_14_015024) do
     t.bigint "theater_id", null: false
     t.index ["name"], name: "index_movies_on_name"
     t.index ["theater_id"], name: "index_movies_on_theater_id"
+  end
+
+  create_table "rankings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name"
+    t.date "rank_date", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "ranking_type"
   end
 
   create_table "reservations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -94,6 +104,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_14_015024) do
   end
 
   add_foreign_key "movie_rankings", "movies"
+  add_foreign_key "movie_rankings", "rankings"
   add_foreign_key "reservations", "schedules"
   add_foreign_key "reservations", "sheets"
   add_foreign_key "schedules", "movies"

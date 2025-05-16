@@ -15,7 +15,10 @@ namespace :reservation do
     reservations.find_each do |reservation|
       mail = ReservationMailer.reminder_email(reservation)
       mail.deliver_now
-      Rails.logger.info "[送信成功] ID:#{reservation.id}, Email:#{reservation.email}, MsgID:#{mail.message_id}, JST時刻:#{Time.zone.now.strftime('%Y-%m-%d %H:%M:%S %:z')}"
+      Rails.logger.info(
+        "[送信成功] ID:#{reservation.id}, Email:#{reservation.email}, " \
+        "MsgID:#{mail.message_id}, JST時刻:#{Time.zone.now.strftime('%Y-%m-%d %H:%M:%S %:z')}"
+      )
     rescue StandardError => e
       Rails.logger.error "[送信失敗] ID:#{reservation.id}, Email:#{reservation.email}, エラー:#{e.message}"
     end

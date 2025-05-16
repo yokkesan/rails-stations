@@ -18,6 +18,8 @@ class RankingsController < ApplicationController
   private
 
   def parse_date(date_param)
-    Date.parse(date_param) rescue Date.today
+    Date.parse(date_param)
+  rescue StandardError
+    Date.today
   end
 end

@@ -2,8 +2,9 @@
 
 FactoryBot.define do
   factory :movie_ranking do
-    movie { nil }
-    total_reservations { 1 }
-    rank_date { '2025-05-11' }
+    association :movie
+    association :ranking
+    rank_date { Date.today }
+    total_reservations { 5 }
   end
 end

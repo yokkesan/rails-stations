@@ -18,15 +18,12 @@ class ReservationsController < ApplicationController
     @reservation = Reservation.new(reservation_params)
 
     if @reservation.save
-      # メール送信は一時停止中（上限に達したため）
+      # メール送信処理（現在一時停止中）
       # ReservationMailer.confirmation_email(@reservation).deliver_now
 
       redirect_to movie_path(@reservation.schedule.movie_id), notice: '予約が完了しました'
     else
-      @schedule = @reservation.schedule
-      @movie = @schedule.movie if @schedule
-      @sheet = @reservation.sheet
-      @date = @reservation.date
+      set_reservation_context
       render :new, status: :unprocessable_entity
     end
   end
@@ -37,10 +34,10 @@ class ReservationsController < ApplicationController
     params.require(:reservation).permit(:schedule_id, :sheet_id, :name, :email, :date)
   end
 
-  def reservation_path_with_params(reservation)
-    movie_id = reservation.schedule&.movie_id
-    schedule_id = reservation.schedule_id
-    date = reservation.date
-    "/movies/#{movie_id}/reservation?schedule_id=#{schedule_id}&date=#{date}"
+  def set_reservation_context
+    @schedule = @reservation.schedule
+    @movie    = @schedule.movie if @schedule
+    @sheet    = @reservation.sheet
+    @date     = @reservation.date
   end
 end

@@ -2,6 +2,6 @@
 
 FactoryBot.define do
   factory :theater do
-    name { "テスト劇場#{rand(100)}" }
+    name { 'テスト劇場' }
   end
 end

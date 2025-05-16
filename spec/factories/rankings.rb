@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :ranking do
-    name { "MyString" }
+    ranking_type { 'daily' }
+    rank_date { Date.today }
+    name { '日間ランキング' }
   end
 end

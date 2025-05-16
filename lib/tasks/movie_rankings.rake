@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :movie_rankings do
   desc '予約数に基づいて映画ランキングを更新する（daily / weekly / monthly）'
   task update: :environment do
@@ -5,8 +7,8 @@ namespace :movie_rankings do
     today = Date.today
 
     config = {
-      'daily' =>   { days: 0, name: '日間ランキング' },
-      'weekly' =>  { days: 6, name: '週間ランキング' },
+      'daily' => { days: 0, name: '日間ランキング' },
+      'weekly' => { days: 6, name: '週間ランキング' },
       'monthly' => { days: 29, name: '月間ランキング' }
     }[ranking_type]
 
@@ -16,7 +18,6 @@ namespace :movie_rankings do
     end
 
     start_date = today - config[:days]
-    now = Time.zone.now.strftime('%Y-%m-%d %H:%M:%S')
     Rails.logger = Logger.new(Rails.root.join('log/cron.log')) if ENV['CRON'] == 'true'
     Rails.logger.info "[MovieRanking][#{ranking_type}] 集計開始 #{start_date}〜#{today}"
 
@@ -25,7 +26,7 @@ namespace :movie_rankings do
       r.name = config[:name]
     end
 
-    # 映画ごとに集計
+    # 映画ごとに予約数を集計
     counts = Reservation.joins(schedule: :movie)
                         .where(date: start_date..today)
                         .group('movies.id')
@@ -33,15 +34,18 @@ namespace :movie_rankings do
                         .count
 
     counts.each do |movie_id, count|
-      mr = MovieRanking.find_or_initialize_by(
-        movie_id: movie_id,
-        ranking_id: ranking.id,
+      movie = Movie.find(movie_id)
+
+      movie_ranking = MovieRanking.find_or_initialize_by(
+        movie: movie,
+        ranking: ranking,
         rank_date: today
       )
-      mr.total_reservations = count
-      mr.save!
 
-      Rails.logger.info "[MovieRanking][#{ranking_type}] 保存: movie_id=#{movie_id}, total_reservations=#{count}"
+      movie_ranking.total_reservations = count
+      movie_ranking.save!
+
+      Rails.logger.info "[MovieRanking][#{ranking_type}] 保存: movie_id=#{movie.id}, total_reservations=#{count}"
     end
 
     Rails.logger.info "[MovieRanking][#{ranking_type}] 集計完了（#{counts.size}件）"
