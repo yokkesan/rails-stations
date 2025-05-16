@@ -7,6 +7,7 @@ env :RAILS_ENV, 'production'
 set :output, '/app/log/cron.log'
 set :environment, 'production'
 
+# リマインドメール
 every 1.day, at: '19:00 pm' do
   rake 'reservation:send_reminder'
 end
