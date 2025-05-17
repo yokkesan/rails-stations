@@ -2,16 +2,23 @@
 
 class ReservationsController < ApplicationController
   def new
-    if params[:date].blank? || params[:sheet_id].blank?
-      head :bad_request
-      return
-    end
+    return head(:bad_request) if missing_params?
 
+    set_resources
+    @reservation = Reservation.new
+  end
+
+  private
+
+  def missing_params?
+    params[:date].blank? || params[:sheet_id].blank?
+  end
+
+  def set_resources
     @schedule = Schedule.find(params[:schedule_id])
     @movie = @schedule.movie
     @sheet = Sheet.find(params[:sheet_id])
     @date = params[:date]
-    @reservation = Reservation.new
   end
 
   def create
@@ -27,8 +34,6 @@ class ReservationsController < ApplicationController
       render :new, status: :unprocessable_entity
     end
   end
-
-  private
 
   def reservation_params
     params.require(:reservation).permit(:schedule_id, :sheet_id, :name, :email, :date)

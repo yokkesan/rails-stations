@@ -35,15 +35,29 @@ module Admin
       @movie = Movie.new(movie_params)
 
       if @movie.save
-        flash[:notice] = '映画が登録されました'
-        redirect_to admin_movies_path
+        redirect_success
       else
-        flash.now[:alert] = "登録に失敗しました: #{@movie.errors.full_messages.join(', ')}"
-        render :new, status: :unprocessable_entity
+        render_failure(:new, '登録に失敗しました')
       end
     rescue StandardError => e
-      flash.now[:alert] = "エラーが発生しました: #{e.message}"
-      render :new, status: :internal_server_error
+      render_error(:new, e.message)
+    end
+
+    private
+
+    def redirect_success
+      flash[:notice] = '映画が登録されました'
+      redirect_to admin_movies_path
+    end
+
+    def render_failure(view, message)
+      flash.now[:alert] = "#{message}: #{@movie.errors.full_messages.join(', ')}"
+      render view, status: :unprocessable_entity
+    end
+
+    def render_error(view, error_message)
+      flash.now[:alert] = "エラーが発生しました: #{error_message}"
+      render view, status: :internal_server_error
     end
 
     # 映画編集フォームを表示
@@ -56,15 +70,12 @@ module Admin
       @movie = Movie.find(params[:id])
 
       if @movie.update(movie_params)
-        flash[:notice] = '映画情報が更新されました'
-        redirect_to admin_movies_path
+        redirect_success
       else
-        flash.now[:alert] = "更新に失敗しました: #{@movie.errors.full_messages.join(', ')}"
-        render :edit, status: :unprocessable_entity
+        render_failure(:edit, '更新に失敗しました')
       end
     rescue StandardError => e
-      flash.now[:alert] = "エラーが発生しました: #{e.message}"
-      render :edit, status: :internal_server_error
+      render_error(:edit, e.message)
     end
 
     # 映画を削除する
@@ -80,8 +91,6 @@ module Admin
       flash[:alert] = "削除に失敗しました: #{e.message}"
       redirect_to admin_movies_path, status: :internal_server_error
     end
-
-    private
 
     def movie_params
       params.require(:movie).permit(:name, :year, :description, :image_url, :is_showing)

@@ -4,16 +4,16 @@ AllCops:
 
   # 除外するファイルやディレクトリ
   Exclude:
-    - 'db/**/*'
-    - 'bin/**/*'
-    - 'vendor/**/*'
-    - 'node_modules/**/*'
+    - "db/**/*"
+    - "bin/**/*"
+    - "vendor/**/*"
+    - "node_modules/**/*"
 
 # 行の長さに関する設定
 Layout/LineLength:
   Max: 120
   Exclude:
-    - 'config/initializers/devise.rb'
+    - "config/initializers/devise.rb"
 
 # メソッドの行数制限
 Metrics/MethodLength:
@@ -26,7 +26,7 @@ Metrics/ClassLength:
 Metrics/BlockLength:
   Max: 150
   Exclude:
-    - 'spec/station12/reservations_controller_spec.rb'
+    - "spec/station12/reservations_controller_spec.rb"
 
 # ドキュメントコメントの要求を無効化
 Style/Documentation:

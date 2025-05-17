@@ -6,14 +6,14 @@ namespace :movie_rankings do
     ranking_type = ENV['TYPE']
 
     unless %w[daily weekly monthly].include?(ranking_type)
-      puts "無効な TYPE です。TYPE=daily / weekly / monthly を指定してください。"
+      puts '無効な TYPE です。TYPE=daily / weekly / monthly を指定してください。'
       exit
     end
 
     today = Date.today
     config = {
-      'daily' =>   { days: 0,  name: '日間ランキング' },
-      'weekly' =>  { days: 6,  name: '週間ランキング' },
+      'daily' => { days: 0, name: '日間ランキング' },
+      'weekly' => { days: 6, name: '週間ランキング' },
       'monthly' => { days: 29, name: '月間ランキング' }
     }[ranking_type]
 
@@ -50,7 +50,10 @@ namespace :movie_rankings do
       if movie_ranking.save
         Rails.logger.info "[MovieRanking][#{ranking_type}] 保存: movie_id=#{movie.id}, total_reservations=#{count}"
       else
-        Rails.logger.error "[MovieRanking][#{ranking_type}] 保存失敗: movie_id=#{movie.id}, エラー: #{movie_ranking.errors.full_messages.join(', ')}"
+        Rails.logger.error(
+          "[MovieRanking][#{ranking_type}] 保存失敗: movie_id=#{movie.id}, エラー: " \
+          "#{movie_ranking.errors.full_messages.join(', ')}"
+        )
       end
     end
 

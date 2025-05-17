@@ -3,29 +3,11 @@
 class MoviesController < ApplicationController
   def index
     @movies = Movie.all
-    # 検索処理
-    # 検索キーワード
-    if params[:keyword].present?
-      @movies = @movies.where('name LIKE ? OR description LIKE ?', "%#{params[:keyword]}%", "%#{params[:keyword]}%")
-    end
-
-    # 上映中 or 上映予定でフィルタ
-    if params[:is_showing].present?
-      @movies = @movies.where(is_showing: params[:is_showing])
-    end
-
-    # 最新の月間ランキング
-    ranking = Ranking.where(ranking_type: 'monthly').order(rank_date: :desc).first
-
-    @rankings =
-      if ranking
-        ranking.movie_rankings.includes(:movie).order(total_reservations: :desc)
-      else
-        []
-      end
+    apply_keyword_filter
+    apply_showing_filter
+    load_latest_monthly_ranking
   end
 
-  # 映画詳細ページ
   def show
     @movie = Movie.find(params[:id])
     @schedules = @movie.schedules.includes(:screen).order(:start_time)
@@ -33,7 +15,6 @@ class MoviesController < ApplicationController
                                .where(schedule_id: @schedules.ids, date: Date.today..)
   end
 
-  # 座席予約ページ
   def reservation
     return unless find_movie_or_redirect
     return unless validate_schedule_params
@@ -44,6 +25,24 @@ class MoviesController < ApplicationController
   end
 
   private
+
+  def apply_keyword_filter
+    return unless params[:keyword].present?
+
+    keyword = "%#{params[:keyword]}%"
+    @movies = @movies.where('name LIKE ? OR description LIKE ?', keyword, keyword)
+  end
+
+  def apply_showing_filter
+    return unless params[:is_showing].present?
+
+    @movies = @movies.where(is_showing: params[:is_showing])
+  end
+
+  def load_latest_monthly_ranking
+    ranking = Ranking.where(ranking_type: 'monthly').order(rank_date: :desc).first
+    @rankings = ranking ? ranking.movie_rankings.includes(:movie).order(total_reservations: :desc) : []
+  end
 
   def find_movie_or_redirect
     @movie = Movie.find_by(id: params[:movie_id] || params[:id])
@@ -64,12 +63,10 @@ class MoviesController < ApplicationController
 
   def find_schedule_or_redirect
     @schedule = Schedule.find_by(id: params[:schedule_id])
-    if @schedule
-      true
-    else
-      redirect_to movie_path(@movie), alert: 'スケジュールが見つかりません'
-      false
-    end
+    return true if @schedule
+
+    redirect_to movie_path(@movie), alert: 'スケジュールが見つかりません'
+    false
   end
 
   def load_sheets_and_reservations

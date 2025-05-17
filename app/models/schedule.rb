@@ -11,15 +11,10 @@ class Schedule < ApplicationRecord
   private
 
   def screen_schedule_must_be_unique
-    return if screen_id.blank? || start_time.blank? || end_time.blank?
+    return if screen_id.blank? || start_time.blank? || movie_id.blank?
 
-    overlap = Schedule.where(screen_id: screen_id)
-                      .where.not(id: id)
-                      .where('start_time < ? AND end_time > ?', end_time, start_time)
-                      .exists?
+    return unless Schedule.exists?(screen_id: screen_id, start_time: start_time, movie_id: movie_id)
 
-    return unless overlap
-
-    errors.add(:base, 'このスクリーン・時間帯には既に別作品のスケジュールがあります')
+    errors.add(:base, '同じ時間・同じスクリーン・同じ映画のスケジュールは登録できません')
   end
 end

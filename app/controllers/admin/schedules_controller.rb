@@ -31,18 +31,34 @@ module Admin
       @schedule = Schedule.new(schedule_params)
 
       if @schedule.save
-        flash[:notice] = 'スケジュールが登録されました'
-        redirect_to admin_schedules_path
+        handle_success
       else
-        puts '=== バリデーションエラー ==='
-        puts @schedule.errors.full_messages
-
-        @movies = Movie.includes(:theater).all
-        @screens = Screen.all
-
-        flash.now[:alert] = '登録に失敗しました'
-        render :new, status: :unprocessable_entity
+        handle_failure
       end
+    end
+
+    private
+
+    def handle_success
+      flash[:notice] = 'スケジュールが登録されました'
+      redirect_to admin_schedules_path
+    end
+
+    def handle_failure
+      log_validation_errors
+      load_dependencies
+      flash.now[:alert] = '登録に失敗しました'
+      render :new, status: :unprocessable_entity
+    end
+
+    def log_validation_errors
+      puts '=== バリデーションエラー ==='
+      puts @schedule.errors.full_messages
+    end
+
+    def load_dependencies
+      @movies = Movie.includes(:theater).all
+      @screens = Screen.all
     end
 
     def update
@@ -60,8 +76,6 @@ module Admin
       flash[:notice] = 'スケジュールが削除されました'
       redirect_to admin_schedules_path, status: :see_other
     end
-
-    private
 
     def set_schedule
       @schedule = Schedule.find(params[:id])

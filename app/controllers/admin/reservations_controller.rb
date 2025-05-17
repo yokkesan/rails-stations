@@ -38,20 +38,36 @@ module Admin
       @sheets = Sheet.all
     end
 
-    # PUT /admin/reservations/:id
     def update
-      exists = Reservation.where.not(id: @reservation.id).exists?(
-        schedule_id: reservation_params[:schedule_id],
-        sheet_id: reservation_params[:sheet_id],
-        date: reservation_params[:date]
-      )
-      if exists
-        redirect_to admin_reservations_path, alert: 'その座席はすでに予約されています'
-      elsif @reservation.update(reservation_params)
-        redirect_to admin_reservations_path, notice: '予約を更新しました'
+      @reservation = Reservation.find(params[:id])
+      if @reservation.update(reservation_params)
+        redirect_success
       else
-        redirect_to admin_reservations_path, alert: '予約の更新に失敗しました'
+        render_failure
       end
+    rescue StandardError => e
+      render_error(e)
+    end
+
+    private
+
+    def reservation_params
+      params.require(:reservation).permit(:date, :name, :email, :schedule_id, :sheet_id)
+    end
+
+    def redirect_success
+      flash[:notice] = '予約を更新しました'
+      redirect_to admin_reservations_path
+    end
+
+    def render_failure
+      flash.now[:alert] = '更新に失敗しました'
+      render :edit, status: :unprocessable_entity
+    end
+
+    def render_error(error)
+      flash[:alert] = "エラー: #{error.message}"
+      redirect_to admin_reservations_path, status: :internal_server_error
     end
 
     # DELETE /admin/reservations/:id
@@ -66,14 +82,8 @@ module Admin
       @sheets = Sheet.all
     end
 
-    private
-
     def set_reservation
       @reservation = Reservation.find(params[:id])
-    end
-
-    def reservation_params
-      params.require(:reservation).permit(:schedule_id, :sheet_id, :name, :email, :date)
     end
   end
 end
